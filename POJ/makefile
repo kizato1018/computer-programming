@@ -8,4 +8,4 @@ TAR = $(patsubst %.c, %, $(wildcard *.c)) $(patsubst %.cpp, %, $(wildcard *.cpp)
 all : $(TAR)
 
 clean : $(TAR)
-	rm $(TAR)
+	rm $^
