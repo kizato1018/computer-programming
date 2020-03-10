@@ -1,6 +1,14 @@
-body {
+html,body {
+/*
+	text-align: center;
+*/
+	width:  100%;
+	height: 100%;
+	margin: 0;
+/*
 	margin: 10%;
 	overflow: hidden;
+*/
 }
 canvas
 {
@@ -9,5 +17,5 @@ canvas
 	height: 100%;
 	border: 1px	solid #000000;
 */
-	background-color: brown;
+	background-color: gray;
 }
