@@ -1,20 +1,18 @@
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
+var c_width = window.innerWidth * 0.8;
+var c_height = window.innerHeight * 0.8;
 var H = 20;
 var W = 20;
-var Left = 0;
+var Left =  window.innerWidth * 0.2;
 var Right = window.innerWidth;
-var Top = 0;
+var Top = window.innerHeight;
 var Button = window.innerHeight;
 
 function resizeCanvas() {
 	c.style.width = window.innerWidth * 0.8 + "px";
 	c.style.height = window.innerHeight * 0.8 + "px";
 	c.style.margin = window.innerHeight * 0.1 + "px " + window.innerWidth * 0.1 + "px";
-	Left = c.style.width * 0.2;
-	Top = c.style.height * 0.2;
-	Right = c.style.width * 0.8;
-	Button = c.style.height * 0.8;
 	console.log(c.style.width * 0.2);
 }
 
