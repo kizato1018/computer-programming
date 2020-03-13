@@ -1,3 +1,4 @@
 all:
 	gcc test.c -o test
 	gcc hw0101.c mystring.c -o hw0101
+	gcc hw0102.c -o hw0102
