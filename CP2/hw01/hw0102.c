@@ -23,7 +23,7 @@ int main() {
 	char a[20] = {0};
 	int mac[6] = {0};
 	char *token;
-
+	printf("Please enter the string: ");
 	if(strlen(a) > 18  || strlen(a) < 17) END
 	if(strlen(a) == 18 && a[17] != '\n') END
 	token = strtok(a, ":");
