@@ -43,8 +43,10 @@ var Button = c_height / 0.8 + 5;//window.innerHeight;
 var 
 
 function resizeCanvas() {
-	c.style.width = window.innerWidth * 0.8 + "px";
-	c.style.height = window.innerHeight * 0.8 + "px";
+	c.setAttribute(width, window.innerWidth * 0.8);
+	c.setAttribute(height, window.innerHeight * 0.8);
+	//c.style.width = window.innerWidth * 0.8 + "px";
+	//c.style.height = window.innerHeight * 0.8 + "px";
 	c.style.margin = window.innerHeight * 0.1 + "px " + window.innerWidth * 0.1 + "px";
 	console.log("width: "+ window.innerWidth);
 	console.log("height: "+ window.innerHeight);
@@ -81,7 +83,7 @@ function drawGrid() {
 		console.log("draw w: " + (Left + grid_width * i));
 	}
 }
-
+*/
 function draw() {
 	ctx.lineWidth = 10;
 
@@ -90,5 +92,5 @@ function draw() {
 	
 }
 
-init()
+//init()
 draw()
