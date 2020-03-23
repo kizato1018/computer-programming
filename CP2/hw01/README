@@ -1,0 +1,25 @@
+hw0101
+實做string.h中的部份函式
+char *mystrchr(const char *s, int c);
+char *mystrrchr(const char *s, int c);
+size_t mystrspn(const char *s, const char *accept);
+size_t mystrcspn(const char *s, const char *reject);
+char *mystrpbrk(const char *s, const char *accept);
+char *mystrstr(const char *haystack , const char *needle);
+char *mystrtok(char *str, const char *delim);
+
+hw0102
+檢查一個字串是否為合法的MAC位址
+
+hw0103
+實做萬用字元中的(*)和(?)
+
+hw0104
+實做分數結構及分數四則運算
+
+hw0105
+實做分數運算式的四則運算
+
+hw0106
+在hw0103中的輸入不定長度的內容。
+透過getchar單獨抓字元，並運用realloc重新動態分配記憶體，以確保有足夠空間收所有輸入。

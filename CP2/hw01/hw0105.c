@@ -46,10 +46,14 @@ int main() {
 				token = strtok(NULL, "(), ");
 				b = atoi(token);
 				push(operator, i);
-				rational_set(&r[i++], a, b);
+				if(rational_set(&r[i++], a, b) == -1) {
+					printf("Wrong input\n");
+					return 0;
+				}
 				break;
 			default:
-				break;
+				printf("Wrong input\n");
+				return 0;
 		}
 		token = strtok(NULL, "(), ");
 	}

@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 int main() {
-	char *a = calloc(10, sizeof(char));
-	a[0]=1;
-	printf("%ld\n", strlen(a));
+	char *a = "abc";
+	int i = atoi(a);
+	printf("%d\n", i);
 }
