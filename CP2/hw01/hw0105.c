@@ -21,27 +21,6 @@ char* input() {
 	return s;
 }
 
-bool cmp(char a, char b) {
-	int x, y;
-	switch (a) {
-		case '+': case '-': 
-			x = 1;
-			break;
-		case '*': case '/': 
-			x = 2;
-			break;
-	}
-	switch (b) {
-		case '+': case '-': 
-			y = 1;
-			break;
-		case '*': case '/': 
-			y = 2;
-			break;
-	}
-	return x <= y;
-}
-
 void push(char *st, char op) {
 	st[strlen(st)] = op;
 }
@@ -55,7 +34,6 @@ int main() {
 	char *eq = input();
 	r = calloc(strlen(eq), sizeof(struct rational));
 	operator = calloc(strlen(eq), sizeof(char));
-	//memset(operator, 0, strlen(eq) * sizeof(char));
 
 	char *token = strtok(eq, "(), ");
 	while(token != NULL) {
@@ -75,37 +53,32 @@ int main() {
 		}
 		token = strtok(NULL, "(), ");
 	}
-	for(int i = 0; i<5; i++) {
-		rational_print(r[i]);
-	}
 	for(int i = 0, j = 0; i < strlen(operator); i++, j++) {
 		operator[j] = operator[i];
 		switch(operator[i]) {
 			case '*':
 				rational_mul(&r[operator[j-1]], r[operator[j-1]], r[operator[i+1]]);
-				operator[j] = 0; i++; j--;
+				i++; j--;
 				break;
 			case '/':
 				rational_div(&r[operator[j-1]], r[operator[j-1]], r[operator[i+1]]);
-				operator[j] = 0; i++; j--;
+				i++; j--;
 				break;
 			default:
 				break;
 		}	 
 	}
-	for(int i = 0; i<5; i++) {
-		rational_print(r[i]);
-	}
 	for(int i = 0, j = 0; i < strlen(operator); i++, j++) {
+		
 		operator[j] = operator[i];
 		switch(operator[i]) {
 			case '+':
 				rational_add(&r[operator[j-1]], r[operator[j-1]], r[operator[i+1]]);
-				operator[j] = 0; i++; j--;
+				i++; j--;
 				break;
 			case '-':
 				rational_sub(&r[operator[j-1]], r[operator[j-1]], r[operator[i+1]]);
-				operator[j] = 0; i++; j--;
+				i++; j--;
 				break;
 			default:
 				break;
@@ -114,8 +87,3 @@ int main() {
 	rational_print(*r);
 }
 
-/*
-an = x * 
-1+2*3/4+5*6
-1+2+5
-*/
