@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#define MAX 2
 
 bool cmp(const char *str, const char *pt) {
 	if((bool)*str ^ (bool)*pt) 
@@ -24,8 +23,8 @@ bool cmp(const char *str, const char *pt) {
 }
 
 char* input() {
-	size_t size = MAX;
-	char *s = calloc(MAX, sizeof(char));
+	size_t size = 2;
+	char *s = calloc(2, sizeof(char));
 	size_t i = 0;
 	char buffer;
 	while((buffer = getchar()) != '\n' && buffer != EOF) {

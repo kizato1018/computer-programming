@@ -45,7 +45,7 @@ size_t mystrcspn(const char *s, const char *reject) {
 	return i;
 }
 char *mystrpbrk(const char *s, const char *accept) {
-	return (*(s+mystrcspn(s, accept))) ? (char *)(s+mystrcspn(s, accept)) : NULL;
+	return (s[mystrcspn(s, accept)]) ? (char *)s+mystrcspn(s, accept) : NULL;
 }
 char *mystrstr(const char *haystack , const char *needle) {
 	size_t cnt= 0;
@@ -57,10 +57,9 @@ char *mystrstr(const char *haystack , const char *needle) {
 }
 char *mystrtok(char *str, const char *delim) {
 	static char *s;
-	if(str) s = str;
-	else s++;
-	while(*(s))
-		if(*(s) == *delim) return s;
-		else s++;
-	return NULL;
+	if(str) s = str; // a b c " " 
+	else s += mystrcspn(s, "\0") + 1;
+	if(!mystrcspn(s, delim)) return NULL;
+	s[mystrcspn(s, delim)] = '\0';
+	return s;
 }
