@@ -4,6 +4,9 @@
 using namespace std;
 
 int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
 	int n, d;
 	cin >> n >> d;
 	int a[n], b[n+1];
