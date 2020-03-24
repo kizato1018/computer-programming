@@ -15,7 +15,7 @@ int main() {
 		cin >> a[i];
 		if(flag) break;
 		b += a[i];
-		if(b > d) b -= a[c++];
+		while(b > d) b -= a[c++];
 		if(b == d) flag = true;
 	}
 	if(flag) cout << "yes" << endl;
