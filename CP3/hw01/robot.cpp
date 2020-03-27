@@ -2,6 +2,6 @@
 #include "maze.h"
 
 
-void Robot::Go() {
+void Robot::Go(int64_t n) {
 	return;
 }

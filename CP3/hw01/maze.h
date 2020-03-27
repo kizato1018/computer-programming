@@ -8,7 +8,7 @@ class Maze{
 public:
     Maze(int W, int H);
     void GetMap();
-    Robot GetPlayer();
+    Robot GetRobot();
     void PrintMap();
 private:
     int w, h;

@@ -8,9 +8,11 @@ using namespace std;
 
 int main() {
     int W, H;
+    Robot robot;
     cin >> W >> H;
     Maze M(W, H);
     M.GetMap();
+    robot = M.GetRobot();
     M.PrintMap();
 
 }
