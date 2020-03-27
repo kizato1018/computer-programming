@@ -1,6 +1,18 @@
-#ifndef MAZE_H
-#define MAZE_H
+#ifndef __MAZE_H__
+#define __MAZE_H__
+#include <vector>
+#include <iostream>
 
-class Maze{}
+
+class Maze{
+public:
+    Maze(int W, int H);
+    void GetMap();
+    Robot GetPlayer();
+    void PrintMap();
+private:
+    int w, h;
+    std::vector<std::string> Map;
+};
 
 #endif
