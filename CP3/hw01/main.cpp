@@ -9,13 +9,11 @@ int main() {
     Pos p;
     int64_t n;
     Robot robot;
-    cin >> W >> H;
+    cin >> W >> H >> n;
     Maze M(W, H);
     M.SetMap();
-    cin >> n;
     robot.Setup(M);
-    M.PrintMap();
     p = robot.Go(n, M);
-    cout << "(" << p.x << ", " << p.y << ")" << endl;
+    cout << p.x << " " << p.y << endl;
 
 }

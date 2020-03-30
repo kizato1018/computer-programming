@@ -1,9 +1,6 @@
 #ifndef __ROBOT_H__
 #define __ROBOT_H__
 #include "maze.h"
-// c.x = a.x + b.x
-// c.y = a.y + b.y
-// c = a + b
 
 class Robot{
 public:

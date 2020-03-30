@@ -15,7 +15,6 @@ class Maze{
 public:
     Maze(const int W, const int H);
     void SetMap();
-    // Robot GetRobot();
     char GetPostion(Pos p) const { return Map[p.y][p.x]; };
     int GetWidth() const { return w; }
     int GetHeight() const { return h; }

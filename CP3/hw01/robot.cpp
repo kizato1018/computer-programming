@@ -1,5 +1,4 @@
 #include "robot.h"
-#include "maze.h"
 
 void Robot::Setup(const Maze &m) {
 	 for(int i = 0; i < m.GetHeight(); i++) {
@@ -20,19 +19,18 @@ Pos Robot::Go(int64_t n, const Maze &m) {
 	int cnt = 0;
 	while(n--) {
 		if(m.GetPostion(pos+dir[direct]) == '.') {
-			pos = pos + direct[dir];
+			pos = pos + dir[direct];
 			cnt++;
 		}
 		else if(m.GetPostion(pos+dir[direct]) == '#') {
-			direct = direct + 1 % 4;
+			direct = (direct + 1) % 4;
 			n++;
 		}
 		else {
-			n--;
-			cnt++;
+			pos = pos + dir[direct];
+            cnt++;
 			n %= cnt;
 		}
-
 	}
 	return pos;
 }
