@@ -1,0 +1,10 @@
+01 Alice 100
+02 Ban 30
+03 Brian 66
+04 Yoyo 32
+05 Hello 97
+06 Banana 68
+07 Egg 38
+08 Code 90
+09 Kin 80
+10 Jam 2
