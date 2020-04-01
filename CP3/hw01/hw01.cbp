@@ -31,6 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="main.cpp" />
+		<Unit filename="maze.cpp" />
+		<Unit filename="maze.h" />
+		<Unit filename="robot.cpp" />
+		<Unit filename="robot.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
