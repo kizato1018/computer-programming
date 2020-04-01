@@ -2,6 +2,10 @@
     "files.associations": {
         "iostream": "cpp",
         "ostream": "cpp",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "chrono": "c",
+        "condition_variable": "c",
+        "ctime": "c",
+        "shared_mutex": "c"
     }
 }
