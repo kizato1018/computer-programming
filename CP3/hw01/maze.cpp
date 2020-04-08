@@ -1,16 +1,14 @@
-#include <cstdlib>
-#include "robot.h"
 #include "maze.h"
 
 using namespace std;
 
 
-Maze::Maze(int W, int H) {
+Maze::Maze(const int W, const int H) {
     w = W;
     h = H;
 }
 
-void Maze::GetMap() {
+void Maze::SetMap() {
     for(int i = 0; i < h; i++) {
         string s;
         cin >> s;
@@ -18,6 +16,7 @@ void Maze::GetMap() {
     }
 }
 
+<<<<<<< HEAD
 Robot Maze::GetRobot() {
     Robot robot;
     Pos dir[4] = {{.x = -1, .y = 0},
@@ -40,6 +39,9 @@ Robot Maze::GetRobot() {
 }
 
 void Maze::PrintMap() {
+=======
+void Maze::PrintMap() const{
+>>>>>>> refs/remotes/origin/master
     for(int i = 0; i < h; i++) {
         cout << Map[i] << endl;
     }

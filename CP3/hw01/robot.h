@@ -1,5 +1,6 @@
 #ifndef __ROBOT_H__
 #define __ROBOT_H__
+<<<<<<< HEAD
 #include <cstdint>
 
 struct Pos{
@@ -19,10 +20,29 @@ public:
 	void SetPos(Pos p) { pos = p; }
 	void SetDirection(Pos d) { direct = d; }
 	void Go(int64_t n);
+=======
+#include "maze.h"
+
+class Robot{
+public:
+	Robot() { pos = Pos{.x = 0, .y = 0}; direct = 0; }
+	void Setup(const Maze &m);
+	Pos Go(int64_t n, const Maze &m);
+>>>>>>> refs/remotes/origin/master
 
 private:
+	void SetPos(Pos p) { pos = p; }
+	void SetDirection(int d) { direct = d; }
 	Pos pos;
+<<<<<<< HEAD
 	Pos direct;
+=======
+	int direct;
+	Pos dir[4] = {{.x = -1, .y = 0},
+				  {.x = 0, .y = -1},
+				  {.x = 1, .y = 0},
+				 {.x = 0, .y = 1}};
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

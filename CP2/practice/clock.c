@@ -11,8 +11,9 @@ int c2s(clock c) {
     return c.hour * 3600 + c.minute * 60 + c.second;
 }
 
-int sub(clock c1, clock c2) {  
-    return (c2s(c1) > c2s(c2)) ? c2s(c1) - c2s(c2) : c2s(c2) - c2s(c1);
+clock sub(clock c1, clock c2) {  
+    uint64_t d = (c2s(c1) > c2s(c2)) ? c2s(c1) - c2s(c2) : c2s(c2) - c2s(c1);
+    return (clock) {.hour = d / 3600, .minute = (d %= 3600) / 60, .second = (d %= 60)};
 }
 
 void input(clock *c) {
@@ -24,9 +25,13 @@ void input(clock *c) {
     scanf("%hhd", &c->second);
 }
 
+void printd(const clock c) {
+    printf("difference: %hhd:%hhd:%hhd\n", c.hour, c.minute, c.second);
+}
+
 int main() {
     clock c1, c2;
     input(&c1);
     input(&c2);
-    printf("difference: %d\n", sub(c1, c2));
+    printd(sub(c1, c2));
 }
