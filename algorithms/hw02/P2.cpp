@@ -58,6 +58,6 @@ int main() {
     }
     if(even[k-1] < odd[j-1]) flag = false;
 
-    printf((flag) ? "Yes\n" : "No\n");
+    printf((flag) ? "yes\n" : "no\n");
     printf("%ld\n", cnt);
 }
