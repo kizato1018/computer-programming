@@ -55,8 +55,11 @@ int main() {
             flag = false;
             break;
         }
+        if(i+1 < k && even[i+1] < odd[i]) {
+            flag = false;
+            break;
+        }
     }
-    if(even[k-1] < odd[j-1]) flag = false;
 
     printf((flag) ? "yes\n" : "no\n");
     printf("%ld\n", cnt);
