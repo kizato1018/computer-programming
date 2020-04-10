@@ -15,7 +15,7 @@ int main() {
         scanf("%ld", &arr[i]);
         fin[i] = arr[i];
     }
-    sort(fin, fin+n);
+    stable_sort(fin, fin+n);
     for(int i = n-1; i >= 0; i--) {
         Max = max(Max, i-(find(fin, fin+i, arr[i])-fin));
     }
