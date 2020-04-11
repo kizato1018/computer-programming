@@ -24,6 +24,7 @@ int main() {
 	int mac[6] = {0};
 	char *token;
 	printf("Please enter the string: ");
+	scanf("%s", a);
 	if(strlen(a) > 18  || strlen(a) < 17) END
 	if(strlen(a) == 18 && a[17] != '\n') END
 	token = strtok(a, ":");
@@ -36,5 +37,4 @@ int main() {
 	if(token != NULL) END
 	for(int i = 0; i < 6; i++)
 		printf("%02x%c", mac[i], "-\n"[i==5]);
-	
 }
