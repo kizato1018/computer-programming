@@ -47,7 +47,7 @@ class Zone{     /* 戰區 */
 		int droneNumber(int id) const { return _droneNumber[id]; }    /* 戰區中各隊無人機數量 */
 		int maxDroneNum() const { return _maxDroneNum; }        /* 戰區中無人機數量最大值 */
 		int belong() const { return _belong; }                  /* 目前佔領此戰區的隊伍 */
-        int ID() const { return  _ID; }                         /* 戰區ID */
+        int ZID() const { return  _ID; }                         /* 戰區ID */
     private:
         Position _pos;
         int _droneNumber[4];
@@ -56,7 +56,6 @@ class Zone{     /* 戰區 */
         int _ID;
         void _newRound() { for(int i = 0; i < 4; i++) _droneNumber[i] = 0; }
         void _countDrone(const int id) { _droneNumber[id]++;}
-
     friend class Game;
     friend class Player;
     friend class Drone;
@@ -73,7 +72,7 @@ class Drone{    /* 無人機 */
         /*for user */
         Position nowPos() const { return _nowPos; }             /* 現在位置 */
         Position lastPos() const { return _lastPos; }           /* 前一個位置 */
-        int ID() const { return _ID; }                          /* 無人機ID */
+        int DID() const { return _ID; }                         /* 無人機ID */
         int belong() const { return _belong; }                  /* 屬於哪位玩家的 */
         int inZone() const { return _inZone; }                  /* 在哪個戰區 */
         Position targetPos() const { return _targetPos; }       /* 目標位置 */
@@ -91,7 +90,7 @@ class Drone{    /* 無人機 */
         void _setPos(Position pos);
         void _settargetPos(Position );
         void _getNear_zone(vector<Zone>& );
-		void _preditTargetPos(const vector<Zone> );
+		void _preditTargetPos(const vector<Zone>& );
         int _tmpDis;
     friend class Game;
     friend class Player;
@@ -117,7 +116,7 @@ void Drone::_getNear_zone(vector<Zone> &zone){
     for( auto i : zone ){
         int d = dis(_nowPos, i.pos());
         if(d <= 100){
-            _inZone = i.ID();
+            _inZone = i.ZID();
             if(_inZone >= 0) {
                 zone[_inZone]._countDrone(_belong);
             }
@@ -130,7 +129,7 @@ void Drone::_getNear_zone(vector<Zone> &zone){
     _near_zone = minZone;
 }
 
-void Drone::_preditTargetPos(const vector<Zone> zone){
+void Drone::_preditTargetPos(const vector<Zone>& zone){
     int minDis=1e9;
 	Zone closetZone;
     if(_lastPos==Position{-1,-1}){
@@ -163,31 +162,33 @@ class Player{   /* 玩家 */
         vector<Drone*> buzydrone;                               /* 很忙的無人機 */
         vector<Zone*> myzone;                                   /* 屬於我的戰區(從maxDroneNum最小到最大) */
         vector<Zone*> otherzone;                                /* 別人的戰區(從maxDroneNum最小到最大) */
-        int FreeDroneNumber;                                    /* 有幾台無人機有空 */
-        int DroneNumber;                                        /* 我有幾台無人機 */
+        int FreeDroneNumber() const { return _FreeDroneNumber; }/* 有幾台無人機有空 */
+        int DroneNumber() const { return _DroneNumber; }        /* 我有幾台無人機 */
         void setMyDrone(int , Position );                       /* 設定我的無人機要去哪(無人機ID,要去的位置) */
         vector<Drone*> DroneInZone(int );                       /* 哪些無人機在那個Zone裡面(Zone ID) */
-        vector<Drone*> nearDrone(Position, vector<Drone>& );      /* 對某個點對所有無人機從近到遠排序 */
-        vector<Drone*> nearDrone(Position, vector<Drone*>& );     /* 對某個點對所有無人機從近到遠排序 */
+        vector<Drone*> nearDrone(Position, vector<Drone>& );    /* 對某個點對所有無人機從近到遠排序 */
+        vector<Drone*> nearDrone(Position, vector<Drone*>& );   /* 對某個點對所有無人機從近到遠排序 */
     private:
         int _ID;
+        int _FreeDroneNumber;
+        int _DroneNumber;
         void _newRound(const int);
         void _setDrone(const int , vector<Zone>& );
         void _updateZone(const int , vector<Zone>& ,const int );
-		void _setDrone_onlyEnemy(const int , const vector<Zone>);
+		void _setDrone_onlyEnemy(const int , const vector<Zone>&);
         //bool cmp(Drone *a, Drone *b) { return dis(a->_nowPos , pos) < dis(b->_nowPos , pos); }
     friend class Game;
 };
 
-void Player::setMyDrone(int ID , Position pos){
-    drone[ID]._settargetPos(pos);
+void Player::setMyDrone(int id , Position pos){
+    drone[id]._settargetPos(pos);
     for(int i = 0; i < freedrone.size(); i++) {
-        if(freedrone[i]->ID() == ID) {
+        if(freedrone[i]->DID() == id) {
             buzydrone.push_back(freedrone[i]);
             freedrone.erase(freedrone.begin()+i);
         }
     }
-    FreeDroneNumber--;
+    _FreeDroneNumber--;
 }
 
 void Player::_newRound(const int Num){
@@ -206,7 +207,7 @@ void Player::_setDrone(const int Num, vector<Zone> &zone){
         drone[id]._getNear_zone(zone);
         freedrone.push_back(&(drone[id]));    
     }
-    FreeDroneNumber = DroneNumber;
+    _FreeDroneNumber = _DroneNumber;
 }
 
 void Player::_updateZone(const int Num, vector<Zone> &zone,const int playerID){
@@ -226,7 +227,7 @@ void Player::_updateZone(const int Num, vector<Zone> &zone,const int playerID){
     sort(otherzone.begin(), otherzone.end(), ZoneCmp);
 }
 
-void Player::_setDrone_onlyEnemy(const int Num, const vector<Zone> zone){
+void Player::_setDrone_onlyEnemy(const int Num, const vector<Zone>& zone){
     for(int id = 0; id < Num; id++){
         drone[id]._preditTargetPos(zone);
     }
@@ -268,10 +269,10 @@ class Game{ /* 遊戲主體 */
         void Round(vector<Player> &player, vector<Zone> &zone);                 /* 每一次讀入的資料處理 */
         void Run(vector<Player> &player);                                       /* 輸出這次的結果 */
         void Debug(vector<Player> const &player, vector<Zone> const &zone);     /* Debug */
-        int playerNum() { return _playerNum; }
-        int playerID() { return _playerID; }                                    /* 我的ID */
+        int playerNum() const { return _playerNum; }                                  /* 有幾個player */
+        int playerID() const { return _playerID; }                                    /* 我的ID */
         int droneNum() const { return _droneNum;}                               /* 每個人有幾台無人機 */
-        int zoneNum() { return _zoneNum; }
+        int zoneNum() const { return _zoneNum; }
     private:
         int _playerNum;
         int _playerID;
@@ -296,7 +297,7 @@ void Game::Start(vector<Player> &player, vector<Zone> &zone){
             d._belong = i;
             ply.drone.push_back(d);
         }
-        ply.DroneNumber = _droneNum;
+        ply._DroneNumber = _droneNum;
         player.push_back(ply);
 
     }
@@ -352,30 +353,30 @@ int main(){
 		for(auto i : zone){
 			if(i.belong() == ID){
                 int n = i.maxDroneNum()+1;
-                for(auto j : My.DroneInZone(i.ID())){
+                for(auto j : My.DroneInZone(i.ZID())){
                     if((--n)<0)break;
-                    My.setMyDrone(j->ID(), i.pos());
+                    My.setMyDrone(j->DID(), i.pos());
                 }
 			}
 		}
 		for(auto i:zone){
 			if(i.belong() == -1 && i.maxDroneNum()==0){
-                if(My.FreeDroneNumber>0){
+                if(My.FreeDroneNumber()>0){
                     vector<Drone*> near = My.nearDrone(i.pos(), My.freedrone);
-                    My.setMyDrone(near[0]->ID(), i.pos());
+                    My.setMyDrone(near[0]->DID(), i.pos());
                 }
 			}
 		}
 		for(auto i : My.otherzone){
-			if(My.FreeDroneNumber >= (i->maxDroneNum()+1)){
+			if(My.FreeDroneNumber() >= (i->maxDroneNum()+1)){
                 int n=i->maxDroneNum()+1;
 				while(n--){
-						My.setMyDrone(My.nearDrone(i->pos(), My.freedrone)[0]->ID(), i->pos());
+						My.setMyDrone(My.nearDrone(i->pos(), My.freedrone)[0]->DID(), i->pos());
 				}
 			}
 		}
-		while(My.FreeDroneNumber>0){
-			My.setMyDrone(My.freedrone[0]->ID(), My.freedrone[0]->near_zone().pos());
+		while(My.FreeDroneNumber()>0){
+			My.setMyDrone(My.freedrone[0]->DID(), My.freedrone[0]->near_zone().pos());
 		}
         game.Run(player);                       /* 執行指令 */
     }
