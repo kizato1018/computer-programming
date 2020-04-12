@@ -25,37 +25,50 @@ int8_t color[] = {2, 2, 2, 2, 1, 1, 1, 2,
                   0, 0, 0, 0, 0, 0, 0, 0,
                   1, 1, 1, 1, 2};
 
-char filiter[] = "abcdefghijklmnopqrstuvwxyz0123456789_";
+char check[] = " \t()[]{};,?:";
 
 void HighLight(char *str) {
-    int cnt = 0;
-    char tmp[64] = {};
-    bool f = false;
-    for(int i = 0; i < strlen(str); i++) {
-        if(strchr(filiter, str[i]) == NULL) {
-            for(int j = 0; keyWord[j][0]; j++) {
-                if(strcmp(tmp, keyWord[j]) == 0) {
-                    if(color[j] == 0) 
-                        print(GREEN, tmp);
-                    else if(color[j] == 1) 
-                        print(BLUE, tmp);
-                    else if(color[j] == 2) 
-                        print(PURPLE, tmp);
-                    f = true;
-                    break;
-                }
+    int i = -1, pos = 0, len = 0, cnt = 0, L = strlen(str);
+    char *p;
+    while(keyWord[++i][0]) {
+        pos = 0;
+        while((pos < L) && (p = strstr(str+pos, keyWord[i])) != NULL) {
+            char tmp[1024] = {};
+            cnt = p-str;
+            len = strlen(keyWord[i]);
+            if(!strncmp(p+len, RESET, 3)) break;
+            if(cnt > 0 && strchr(check, p[-1]) == NULL) break;
+            strncpy(tmp, str, cnt);
+            if(color[i] == 0) {
+                strcat(tmp, GREEN);
+                cnt += 11;
             }
-            if(!f) 
-                printf("%s", tmp);
-            if(str[i] == '(' || str[i] == ')' || str[i] == '[' || str[i] == ']' || str[i] == '{' || str[i] == '}') 
-                printf(PURPLE"%c"RESET, str[i]);
-            else printf("%c", str[i]);
-            memset(tmp, 0, sizeof(tmp));
+            else if(color[i] == 1) {
+                strcat(tmp, BLUE);
+                cnt += 11;
+            }
+            else if(color[i] == 2) {
+                strcat(tmp, PURPLE);
+                cnt += 8;
+            }
+            strcat(tmp, keyWord[i]);
+            strcat(tmp, RESET);
+            cnt += len + 4;
+            strcat(tmp, p+len);
+            strcpy(str, tmp);
+            pos = cnt;
             cnt = 0;
-            f = false;
         }
-        else 
-            tmp[cnt++] = str[i];
+    }
+    for(int i = 0; i < strlen(str); i++) {
+        if(str[i] == '(' || str[i] == ')' || str[i] == '[' || str[i] == ']' || str[i] == '{' || str[i] == '}'){
+            if((i>0) && (str[i-1] != '\033'))
+                printf(PURPLE"%c"RESET, str[i]);
+            else
+                printf("%c", str[i]);
+        }
+        else
+            printf("%c", str[i]);
     }
 }
 

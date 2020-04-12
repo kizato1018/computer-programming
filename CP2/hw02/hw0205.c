@@ -26,11 +26,11 @@ int main() {
     }
     while(!feof(confF)) {
         fgets(context, sizeof(context), confF);
-        if(context[0] == '#'){
+        if(context[0] == '#' || context[0] == '['){
             fputs(context, tmpF);
         }
         else {
-            if(strncmp(option, context, strlen(option))){
+            if(strncmp(option, context, strlen(option)) && context[strlen(option)] != '='){
                 fputs(context, tmpF);
             }
             else {
