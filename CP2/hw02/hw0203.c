@@ -60,7 +60,17 @@ void HighLight(char *str) {
             cnt = 0;
         }
     }
-    printf("%s", str);
+    for(int i = 0; i < strlen(str); i++) {
+        if(str[i] == '(' || str[i] == ')' || str[i] == '[' || str[i] == ']' || str[i] == '{' || str[i] == '}'){
+            if((i>0) && (str[i-1] != '\033'))
+                printf(PURPLE"%c"RESET, str[i]);
+            else
+                printf("%c", str[i]);
+        }
+        else
+            printf("%c", str[i]);
+    }
+    //printf("%s", str);
 }
 
 int main() {

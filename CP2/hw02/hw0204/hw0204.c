@@ -27,9 +27,12 @@ int main() {
     fscanf(scriptF, "REQUIRE( %s )\n", source);
     printf("%s\n%s\n", header, source);
     fprintf(testF, "#include <stdio.h>\n#include \"%s\"\n", header);
-    fprintf(testF, "int main(){\n                                     ");
+    fprintf(testF, "int main(){\n                                              ");
     while(!feof(scriptF)) {
-        fscanf(scriptF, "EXPECT_EQ(%d, %s", &ans, func);
+        if(fscanf(scriptF, "EXPECT_EQ(%d, %s", &ans, func) < 1) {
+            fgetc(scriptF);
+            continue;
+        }
         fgets(tmp, sizeof(tmp), scriptF);
         func[strlen(func)-2] = 0;
         fprintf(testF, "\tprintf(\"%d) %s: %%s\\n\",(%d == %s) ? \"PASS\" : \"WRONG\");\n", cnt++, func, ans, func);
