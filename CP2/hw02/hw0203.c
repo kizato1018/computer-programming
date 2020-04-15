@@ -5,7 +5,8 @@
 
 #define GREEN "\033[0;32;32m"
 #define BLUE "\033[0;32;34m"
-#define PURPLE "\033[0;35m"
+#define PURPLE "\033[0;32;35m"
+#define Yellow "\033[0;32;33m"
 #define RESET "\033[m"
 #define print(color, str) printf(color"%s"RESET, str)
 
@@ -48,7 +49,7 @@ void HighLight(char *str) {
             if(!f) 
                 printf("%s", tmp);
             if(str[i] == '(' || str[i] == ')' || str[i] == '[' || str[i] == ']' || str[i] == '{' || str[i] == '}') 
-                printf(PURPLE"%c"RESET, str[i]);
+                printf(Yellow"%c"RESET, str[i]);
             else printf("%c", str[i]);
             memset(tmp, 0, sizeof(tmp));
             cnt = 0;

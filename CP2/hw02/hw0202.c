@@ -93,7 +93,7 @@ int main() {
         printf("wrong mode\n");
         return 0;
     }
-    offset *= (mode == 1) ? -1 : 1;
+    offset *= (mode == 1) ? 1 : -1;
     offset_T = s2T(offset);
 
     

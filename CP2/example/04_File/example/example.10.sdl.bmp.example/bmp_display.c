@@ -24,7 +24,7 @@ struct _sBmpHeader
     uint32_t	vres;
     uint32_t	used;
     uint32_t	important;
-}__attribute__ ((__packed__));
+}__attribute__((__packed__));
 
 typedef struct _sBmpHeader sBmpHeader;
 
@@ -68,14 +68,14 @@ int main()
     pPixels = malloc( header.bitmap_size );
     fread( pPixels, 1, header.bitmap_size, pFile );
     
-    /*
+    
     for (int32_t i = 0 ; i < header.bitmap_size; i += 3 )
     {
         uint8_t tmp = pPixels[i];
         pPixels[i] = pPixels[i+2];
         pPixels[i+2] = tmp;
     }
-    */
+    
     
     fclose( pFile );
     

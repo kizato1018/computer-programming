@@ -1,7 +1,7 @@
 INCLUDE( test.h )
 REQUIRE( test.c )
 
-EXPECT_EQ(-5, fibonacci(-5));
+EXPECT_EQ(-4, fibonacci(-5));
 EXPECT_EQ(-1, fibonacci(-1));
 EXPECT_EQ(0, fibonacci(0));
 EXPECT_EQ(1, fibonacci(1));
