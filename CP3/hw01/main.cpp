@@ -5,24 +5,16 @@
 using namespace std;
 
 int main() {
-    int W, H;
-<<<<<<< HEAD
+    int W = 0, H = 0;
+    Pos p = Pos{.x = 0, .y = 0};
+    int64_t n = 0;
     Robot robot;
-    cin >> W >> H;
-    Maze M(W, H);
-    M.GetMap();
-    robot = M.GetRobot();
-    M.PrintMap();
-=======
-    Pos p;
-    int64_t n;
-    Robot robot;
+    Maze M;
+    
     cin >> W >> H >> n;
-    Maze M(W, H);
-    M.SetMap();
+    M.SetMap(W, H);
     robot.Setup(M);
     p = robot.Go(n, M);
     cout << p.x << " " << p.y << endl;
->>>>>>> refs/remotes/origin/master
 
 }
