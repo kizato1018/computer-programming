@@ -7,10 +7,9 @@ public:
 	Robot() { pos = Pos{.x = 0, .y = 0}; direct = 0; }
 	void Setup(const Maze &m);
 	Pos Go(const int64_t n, const Maze &m);
-
-private:
 	void SetPos(const Pos p) { pos = p; }
 	void SetDirection(const int d) { direct = d; }
+private:
 	Pos pos;
 	int direct;
 };
