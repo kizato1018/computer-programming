@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 void status(FILE *pF) {
     int choose = 0;
@@ -51,17 +52,29 @@ void status(FILE *pF) {
     }
 }
 
+void budget(FILE *pF) {
+	long int pos = 0xcc;
+	int32_t value;
+	scanf("%d",&value);
+	fseek(pF, pos, SEEK_SET);
+	fwrite(&value, sizeof(value), 1, pF);
+	return;
+}
+
 void menu(FILE *pF) {
     int choose = 0;
     while(1) {
         printf("1) modify status\n");
-        printf("2) modify budget\n");
+        printf("2) modify budget -2147483648~2147483647\n");
         printf("0) exit\n");
         scanf("%d", &choose);
         switch (choose) {
         case 1:
             status(pF);
             break;
+		case 2:
+			budget(pF);
+			break;
         case 0:
             return;
         default:
@@ -74,8 +87,11 @@ void menu(FILE *pF) {
 
 int main() {
     FILE *pF = NULL;
-    char path[256] = "./G4X/G4XUSR00.DAT";
+    char path[256] = {};
     printf("Please input the path of data: ");
+	fgets(path, sizeof(path), stdin);
+    if(path[strlen(path)-1] == '\n')
+        path[strlen(path)-1] = 0;
     if((pF = fopen(path, "rb+")) == NULL) {
         printf("file open error\n");
         return 1;
