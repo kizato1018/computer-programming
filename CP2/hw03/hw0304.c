@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <stdbool.h>
 
 struct _Character {
@@ -27,7 +28,7 @@ void status(FILE *pF) {
     uint8_t id;
     long int pos = 0x1d92;
     long int offset = 12;
-    Character ch;
+    static Character ch;
     int32_t value_32;
     uint8_t value_u8;
     uint16_t value_u16;
@@ -93,6 +94,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.opperation = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -101,6 +103,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.information = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -109,6 +112,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.agility = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -117,6 +121,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.attack = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -125,6 +130,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.defend = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -133,6 +139,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.land = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -141,6 +148,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += choose + 2;
             scanf("%hhd", &value_u8);
+            ch.air = value_u8;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u8, sizeof(uint8_t), 1, pF);
             break;
@@ -149,6 +157,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += (choose-10) * 2 + 12;
             scanf("%hd", &value_u16);
+            ch.political_work = value_u16;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u16, sizeof(uint16_t), 1, pF);
             break;
@@ -157,6 +166,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += (choose-10) * 2 + 12;
             scanf("%hd", &value_u16);
+            ch.information_work = value_u16;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u16, sizeof(uint16_t), 1, pF);
             break;
@@ -165,6 +175,7 @@ void status(FILE *pF) {
             printf("set value: ");
             offset += (choose-10) * 2 + 12;
             scanf("%hd", &value_u16);
+            ch.military_work = value_u16;
             fseek(pF, pos+offset, SEEK_SET);
             fwrite(&value_u16, sizeof(uint16_t), 1, pF);
             break;
@@ -180,44 +191,43 @@ void status(FILE *pF) {
 
 void budget(FILE *pF) {
     int choose = 0;
-    int32_t militery;
-    int32_t headquarter;
-    int32_t alliance;
-    int32_t vlaue_32;
+    static int32_t militery;
+    static int32_t headquarter;
+    static int32_t alliance;
     bool isExit = false;
-    fseek(pF, 0x0092, SEEK_SET);
+    fseek(pF, 0x008e, SEEK_SET);
     fread(&militery, sizeof(int32_t), 1, pF);
     fread(&headquarter, sizeof(int32_t), 1, pF);
-    fseek(pF, 0x00cc, SEEK_CUR);
+    fseek(pF, 0x00cc, SEEK_SET);
     fread(&alliance, sizeof(int32_t), 1, pF);
 
     while(!isExit) {
-        printf("1) modify militery's budget -2147483648~2147483647: ");
-        printf("2) modify headquarter's budget -2147483648~2147483647: ");
-        printf("3) modify alliance's budget -2147483648~2147483647: ");
-        printf("0) exit");
+        printf("1) modify militery's budget -2147483648~2147483647\n");
+        printf("2) modify headquarter's budget -2147483648~2147483647\n");
+        printf("3) modify alliance's budget -2147483648~2147483647\n");
+        printf("0) exit\n");
         scanf("%d", &choose);
         switch (choose) {
         case 1:
             printf("current militery's budget: %d\n", militery);
             printf("set value: ");
-            scanf("%d", &vlaue_32);
-            fseek(pF, 0x0092, SEEK_SET);
-            fwrite(&vlaue_32, sizeof(int32_t), 1, pF);
+            scanf("%d", &militery);
+            fseek(pF, 0x008e, SEEK_SET);
+            fwrite(&militery, sizeof(int32_t), 1, pF);
             break;
         case 2:
             printf("current headquarter's budget: %d\n", headquarter);
             printf("set value: ");
-            scanf("%d", &vlaue_32);
-            fseek(pF, 0x0096, SEEK_SET);
-            fwrite(&vlaue_32, sizeof(int32_t), 1, pF);
+            scanf("%d", &headquarter);
+            fseek(pF, 0x0092, SEEK_SET);
+            fwrite(&headquarter, sizeof(int32_t), 1, pF);
             break;
         case 3:
             printf("current alliance's budget: %d\n", alliance);
             printf("set value: ");
-            scanf("%d", &vlaue_32);
+            scanf("%d", &alliance);
             fseek(pF, 0x00cc, SEEK_SET);
-            fwrite(&vlaue_32, sizeof(int32_t), 1, pF);
+            fwrite(&alliance, sizeof(int32_t), 1, pF);
             break;
         case 0:
             isExit = true;
@@ -234,7 +244,7 @@ void menu(FILE *pF) {
     int choose = 0;
     while(1) {
         printf("1) modify status\n");
-        printf("2) modify budget -2147483648~2147483647\n");
+        printf("2) modify budget\n");
         printf("0) exit\n");
         scanf("%d", &choose);
         switch (choose) {
@@ -255,7 +265,7 @@ void menu(FILE *pF) {
 
 int main() {
     FILE *pF = NULL;
-    char path[256] = {};
+    char path[256] = {0};
     printf("Please input the path of data: ");
 	fgets(path, sizeof(path), stdin);
     if(path[strlen(path)-1] == '\n')

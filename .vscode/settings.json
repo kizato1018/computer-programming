@@ -6,6 +6,7 @@
         "chrono": "c",
         "condition_variable": "c",
         "ctime": "c",
-        "shared_mutex": "c"
+        "shared_mutex": "c",
+        "complex": "c"
     }
 }
