@@ -7,6 +7,8 @@
         "condition_variable": "c",
         "ctime": "c",
         "shared_mutex": "c",
-        "complex": "c"
+        "complex": "c",
+        "stdio.h": "c",
+        "game.h": "c"
     }
 }

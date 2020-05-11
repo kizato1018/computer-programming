@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
 
+void b(void) {
+	static int cnt = 100;
+	printf("cnt: %d\n", cnt);
+	--cnt;
+}
+
 int main() {
-	int16_t a=1060;
-	FILE *pF = NULL;
-	pF = fopen("Binarytest", "wb");
-	fwrite(&a, 2, 1, pF);
-	fclose(pF);
+	b();
+	b();
 }
