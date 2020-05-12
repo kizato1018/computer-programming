@@ -38,8 +38,15 @@ int main() {
     int32_t rank = 1;
 
     // Start
-    printf("Please enter number of plyer: ");
-    scanf("%d", &player_num);
+    while(1) {
+        printf("Please enter the number of players(2~10): ");
+        scanf("%d", &player_num);
+        if(player_num < 2 || player_num > 10) {
+            printf("Wrong players number.\n");
+            system("clear");
+        }
+        else break;
+    }
     Game_setup(&game, player_num);
     player = calloc(1, sizeof(Player));
     CPU = calloc(player_num-1, sizeof(Player));
@@ -151,5 +158,10 @@ int main() {
         printf("You win the 3rd place!\n");
     else
         printf("You win the %dst place!\n", rank);
-    
+
+    // end 
+    free(player);
+    free(CPU);
+    free(pick);
+    return 0;
 }
