@@ -38,6 +38,7 @@ int32_t get_point(int32_t const card) {
 int new_row(Game *game, int32_t const row, int32_t const front) {
     int32_t score = 0;
     for(int32_t i = 0; i < 5; ++i) {
+        if(game->table[row][i] == 0) break;
         score += get_point(game->table[row][i]);
         game->table[row][i] = 0;
     }
@@ -67,29 +68,28 @@ void Game_setup(Game *game, int32_t player_num) {
     return;
 }
 
-void place_card(Game *game, int32_t pick[]) {
-    printf("placing cards: ");
-    qsort(pick, game->player_num, sizeof(int32_t), game_cmp);
-    for(int32_t i = 0; i < game->player_num; ++i) {
-        printf("%3d%c", pick[i], " \n"[i == game->player_num-1]);
-        int32_t value = 0;
-        int32_t row = -1;
-        for(int32_t j = 0; j < 4; ++j) {
-            if(game->table[j][game->table_cnt[j]-1] < pick[i] && game->table[j][game->table_cnt[j]-1] > value) {
-                value = game->table[j][game->table_cnt[i]-1];
-                row = j;
-            }
-        }
-        if(game->table_cnt[row] == 5) {
-            game->score[i] += new_row(game, row, pick[i]);
-        }
-        else {
-            game->table[row][game->table_cnt[row]] = pick[i];
-            ++game->table_cnt[row];
+bool place_card(Game *game, int32_t id, int32_t pick) {
+
+    int32_t value = 0;
+    int32_t row = -1;
+    for(int32_t j = 0; j < 4; ++j) {
+        if(game->table[j][game->table_cnt[j]-1] < pick && game->table[j][game->table_cnt[j]-1] > value) {
+            value = game->table[j][game->table_cnt[j]-1];
+            row = j;
         }
     }
+    if(row < 0) {
+        return true; // pick one row
+    }
+    else if(game->table_cnt[row] == 5) {
+        game->score[id] += new_row(game, row, pick);
+    }
+    else {
+        game->table[row][game->table_cnt[row]] = pick;
+        ++game->table_cnt[row];
+    }
 
-    return;
+    return false;
 }
 
 void show_score(Game const *game) {
@@ -107,7 +107,7 @@ void show_table(Game const *game) {
     printf("Table:\n");
     for(int32_t i = 0; i < 4; i++) {
         for(int32_t j = 0; j < game->table_cnt[i]; ++j) {
-            printf("%-3d", game->table[i][j]);
+            printf("%4d", game->table[i][j]);
         }
         puts("");
     }

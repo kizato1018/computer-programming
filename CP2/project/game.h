@@ -25,7 +25,7 @@ int new_row(Game *game, int32_t const row, int32_t const front);
 
 void Game_setup(Game *game, int32_t player_num);
 
-void place_card(Game *game, int32_t pick[]);
+bool place_card(Game *game, int32_t id, int32_t pick);
 
 void show_score(Game const *game);
 
