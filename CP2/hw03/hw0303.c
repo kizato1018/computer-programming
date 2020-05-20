@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-const uint32_t WIDTH = 1024;
-const uint32_t HEIGHT = 768;
+const uint32_t WIDTH = 128;
+const uint32_t HEIGHT = 128;
 
 struct _sBmpHeader
 {
@@ -51,7 +51,7 @@ typedef struct _Pixel{
     uint8_t R;
 }Pixel;
 
-Pixel pixel[768][1024];
+Pixel pixel[128][128];
 
 Pixel f(size_t x, size_t y) {
     Pixel a = pixel[0][0];

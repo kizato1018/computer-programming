@@ -9,6 +9,14 @@
         "shared_mutex": "c",
         "complex": "c",
         "stdio.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "string_view": "c",
+        "regex": "c",
+        "array": "c",
+        "bitset": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "valarray": "c",
+        "map": "c"
     }
 }
