@@ -17,9 +17,10 @@ int main( int argc, char *argv[] )
     // getopt
     
     int32_t c = 0;
-    
-    while ( ( c = getopt( argc, argv, "abc" ) ) != -1 )
+    int a = 0;
+    while ( 1 )
     {
+        if(( c = getopt( argc, argv, "abc" ) ) == -1) break;
         switch( c )
         {
             case 'a':
@@ -38,6 +39,7 @@ int main( int argc, char *argv[] )
                 printf( "option: unknown\n" ); 
                 break;
         }
+        printf("%d", ++a);
     }
     
     return 0;
