@@ -147,10 +147,12 @@ int main(int argc, char *argv[]) {
         uint32_t X = bmp_header.width * 3;
         uint32_t Y = bmp_header.height;
         for(uint64_t y = 0; y < Y/2; ++y)
-            for(uint64_t x = 0; x < X; ++x) {
-                t = buffer[x+y*X];
-                buffer[x+y*X] = buffer[x+(Y-y-1)*X];
-                buffer[x+(Y-y-1)*X] = t;
+            for(uint64_t x = 0; x < X; x += 3) {
+                for(uint32_t z = 0; z < 3; ++z) {
+                    t = buffer[x+y*X+z];
+                    buffer[x+y*X+z] = buffer[x+(Y-y-1)*X+2-z];
+                    buffer[x+(Y-y-1)*X+2-z] = t;
+                }
             }
         fwrite(buffer, bmp_header.bitmap_size, 1, temp);
         free(buffer);
@@ -188,10 +190,12 @@ int main(int argc, char *argv[]) {
         uint32_t X = jpg_header.Xthumbnail * 3;
         uint32_t Y = jpg_header.Ythumbnail;
         for(uint64_t y = 0; y < Y/2; ++y)
-            for(uint64_t x = 0; x < X; ++x) {
-                t = buffer[x+y*X];
-                buffer[x+y*X] = buffer[x+(Y-y-1)*X];
-                buffer[x+(Y-y-1)*X] = t;
+            for(uint64_t x = 0; x < X; x += 3) {
+                for(uint32_t z = 0; z < 3; ++z) {
+                    t = buffer[x+y*X+z];
+                    buffer[x+y*X+z] = buffer[x+(Y-y-1)*X+2-z];
+                    buffer[x+(Y-y-1)*X+2-z] = t;
+                }
             }
         fwrite(buffer, size, 1, bmp);
         free(buffer);

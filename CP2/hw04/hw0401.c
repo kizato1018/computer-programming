@@ -54,7 +54,8 @@ int main( int argc, char *argv[] ) {
     
     while(fgets(context, sizeof(context), pF)) {
         // printf("%s", context);
-
+        if(context[strlen(context)-1] == '\n')
+            context[strlen(context)-1] = 0;
         int c = 0;
         char *data[64] = {};
         data[c] = strtok(context, separator);
