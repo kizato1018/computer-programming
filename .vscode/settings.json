@@ -17,6 +17,7 @@
         "initializer_list": "c",
         "utility": "c",
         "valarray": "c",
-        "map": "c"
+        "map": "c",
+        "random": "cpp"
     }
 }
