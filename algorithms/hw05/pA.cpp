@@ -10,27 +10,23 @@ struct Edge{
     int w;
 };
 
-int begin = 0, end = 0;
+int Begin = 0, End = 0;
 vector<Edge> vertex[3010];
-int weight[3010][3010];
 bool visited[3010];
 
 int DFS(int n) {
-    if(n == end) {
-        return 1;
+    if(n == End) {
+        return 100000;
     }
-    else if(visited[n]) return 0;
+    else if(visited[n]) return -1;
     visited[n] = true;
-    int a, Min = 100000;
-    for(int i = 1; i <= N; ++i) {
-        if(weight[n][i])
-            if(a = DFS(i))
-                return min(weight[n][i], a);
-        else    
-            continue;
-        if(a != 0) 
-            return min(Min, a);
+    int a;
+    for(int i = 0; i < vertex[n].size(); ++i) {
+        a = DFS(vertex[n][i].v);
+        if(a > 0)
+            return min(vertex[n][i].w, a);
     }
+    return -1;
 }
 
 int main() {
@@ -38,16 +34,10 @@ int main() {
     int32_t u, v, w;
     cin >> N;
     for(int32_t i = 1; i < N; ++i) {
-        // S[i] = i;
-        // cin >> e[i].u >> e[i].v >> e[i].w;
         cin >> u >> v >> w;
-        vertex[u].push_back(v);
-        vertex[v].push_back(u);
+        vertex[u].push_back(Edge{.v = v, .w = w});
+        vertex[v].push_back(Edge{.v = u, .w = w});
     }
-    cin >> begin >> end;
-    for(int32_t i = 1; i <= N; ++i) {
-        pq.push(vertex[begin])
-        sort(vertex[i].begin(), vertex[i].end(), [](Edge a, Edge b){return a.w > b.w;});
-    }
-    
+    cin >> Begin >> End;
+    cout << DFS(Begin) << endl;
 }
