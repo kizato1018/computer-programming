@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 
 int main(int argc , char *argv[])
@@ -25,7 +26,7 @@ int main(int argc , char *argv[])
     info.sin_family = PF_INET;
 
     //localhost test
-    info.sin_addr.s_addr = inet_addr("127.0.0.1");
+    info.sin_addr.s_addr = inet_addr("114.34.59.80");
     info.sin_port = htons(8700);
 
 
@@ -36,12 +37,30 @@ int main(int argc , char *argv[])
 
 
     //Send a message to server
-    char message[1024] = {"Hi there"};
-    char receiveMessage[100] = {};
-    while(fgets(message, 1024, stdin)) {
-        send(sockfd,message,sizeof(message),0);
-        recv(sockfd,receiveMessage,sizeof(receiveMessage),0);
-        printf("%s",receiveMessage);
+    
+    
+    int nBytes = 0;
+    while(1) {
+        // char message[1024] = {"Hi there"};
+        // char receiveMessage[100] = {"HHHHHHHHHHHHHHHH"};
+        // fgets(message, 1024, stdin);
+        int num = 0;
+        int total = 0;
+        scanf("%d", &num);
+        send(sockfd, &num, sizeof(num), 0);
+        recv(sockfd, &total, sizeof(total), 0);
+        printf("total = %d\n", total);
+        // nBytes = strlen(message) + 1;
+        // printf("socket:%d\n", sockfd);
+        // if(send(sockfd,message,nBytes,0) == -1) {
+        //     printf("send error\n");
+        //     return -1;
+        // }
+        // if(recv(sockfd,receiveMessage,sizeof(receiveMessage),0) == -1) {
+        //     printf("recive error\n");
+        //     return -1;
+        // }
+        // printf("%s",receiveMessage);
     }
     printf("close Socket\n");
     

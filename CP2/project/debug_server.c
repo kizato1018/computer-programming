@@ -2,7 +2,22 @@
 #include <unistd.h>
 #include "game.h"
 #include "agent.h"
+#include "server.h"
 #define NL puts("")
+
+
+// int main() {
+//     CData data;
+//     socket_init();
+//     socket_connect();
+//     while(1) {
+//         data = socket_get();
+//         print_CData(&data);
+//     }
+//     return 0;
+// }
+
+
 
 typedef struct _Card{
     int32_t id;
@@ -37,9 +52,16 @@ int main() {
     int32_t player_pick = 0;
     int32_t round = 1;
     int32_t rank = 1;
+    CData data;
 
     // Start
-    
+    socket_init();
+    socket_connect();    
+    while(1) {
+
+    socket_get(&data);
+    print_CData(&data);
+    }
     while(1) {
         printf("Please enter the number of players(2~10): ");
         scanf("%d", &player_num);
@@ -77,7 +99,10 @@ int main() {
         bool isPick = false;
         while(!isPick) {
             printf("pick your card: ");
-            scanf("%d", &player_pick);
+            //scanf("%d", &player_pick);
+            while(socket_get(&data));
+            print_CData(&data);
+            player_pick = data.pick;
             if(!check_card(player, player_pick)) {
                 printf("pick wrong card.\n");
             }
@@ -125,7 +150,10 @@ int main() {
                     printf("Your card is smaller than all row.\n");
                     while(!isPick) {
                         printf("Pick one row (1~4): ");
-                        scanf("%d", &row);
+                        //scanf("%d", &row);
+                        while(socket_get(&data))
+                        print_CData(&data);
+                        row = data.pick;
                         if(row < 1 || row > 4) 
                             printf("Wrong input.\n");
                         else
