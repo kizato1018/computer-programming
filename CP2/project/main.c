@@ -29,7 +29,6 @@ int main() {
     // declare
     int32_t player_num = 0;
     bool gameover = false;
-    bool online = false;
     Game game;
     Player *player;
     Player *CPU;
@@ -39,7 +38,6 @@ int main() {
     int32_t rank = 1;
 
     // Start
-    
     while(1) {
         printf("Please enter the number of players(2~10): ");
         scanf("%d", &player_num);

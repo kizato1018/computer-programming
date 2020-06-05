@@ -7,10 +7,13 @@ int main() {
     print_CData(&data);
     socket_init();
     socket_connect();
-    while(1) {
+
+     r = socket_post(&data);
+     print_Response(&r);
+	
+	while(1) {
         
-    // r = socket_post(&data);
-    // print_Response(&r);
+
     
         scanf("%d", &data.pick);
         print_CData(&data);

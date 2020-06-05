@@ -57,11 +57,11 @@ int main() {
     // Start
     socket_init();
     socket_connect();    
-    while(1) {
+//    while(1) {
 
     socket_get(&data);
     print_CData(&data);
-    }
+//    }
     while(1) {
         printf("Please enter the number of players(2~10): ");
         scanf("%d", &player_num);
