@@ -11,10 +11,7 @@ int main() {
      r = socket_post(&data);
      print_Response(&r);
 	
-	while(1) {
-        
-
-    
+	while(1) { 
         scanf("%d", &data.pick);
         print_CData(&data);
         r = socket_post(&data);

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "String.h"
 
 // class String {
@@ -31,17 +32,24 @@ size_t String::size() const { return size_; }
 const char* String::c_str() const { return str_; }
 const char& String::operator[](size_t i) const { return str_[i]; }
 char& String::operator [] (size_t i) { const_cast<char &> (static_cast<const String &>(*this)[i]);}
-String& String::operator += (const String&) {
-    
+
+String& String::operator += (const String& s) {
+    size_ += s.size_;
+
+    if(size_ > capacity_) {
+        capacity_ <<= 1;
+        delete 
+    }
 }
 String& String::operator += (const char*);
 String& String::operator += (char);
 
 String& String::operator = (const String& s) { 
-    delete str_;
-    str_ = s.str_;
-    size_ = s.size_;
     capacity_ = s.capacity_;
+    size_ = s.size_;
+    delete str_;
+    str_ = new char [capacity_];
+    strcpy(str_, s.str_);    
     return *this;
 }
 
