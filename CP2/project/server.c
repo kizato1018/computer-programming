@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include "server.h"
 
-#define HOST_IP "127.0.0.1"
+#define HOST_IP "10.0.2.15"
 #define PORT 8700
 
 CData inputBuffer;

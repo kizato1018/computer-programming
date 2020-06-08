@@ -5,8 +5,6 @@
     #define DEBUG_LEVEL_VVERBOSE 0 
     #define DEBUG_LEVEL_VERBOSE 0
     #define DEBUG_LEVEL_INFO 0
-    #define DEBUG_LEVEL_ERROR 0
-
 #elif defined(DEBUG_LEVEL_INFO)
     #define DEBUG_LEVEL_ERROR 1
     #define DEBUG_LEVEL_VERBOSE 0
