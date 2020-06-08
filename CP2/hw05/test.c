@@ -9,7 +9,7 @@ int main(void)
  
   curl = curl_easy_init();
   if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "https://ptx.transportdata.tw/MOTC/v2/Air/FIDS/Airport/Arrival");
+    curl_easy_setopt(curl, CURLOPT_URL, "https://ptx.transportdata.tw/MOTC/v2/Air/FIDS/Airport/Arrival");//
     /* example.com is redirected, so we tell libcurl to follow redirection */ 
     // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     FILE *pFile = fopen( "123.txt", "w" );
