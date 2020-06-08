@@ -37,10 +37,27 @@ using namespace std;
 //     return os;
 // }
 
+void ReadWrite(String &str) {
+    cout << "ReadWrite ";
+    str[2] = 'T';
+    cout << str << endl;
+}
+void ReadOnly(const String &str) {
+    cout << "ReadOnly ";
+    char c = str[1];
+    cout << c << endl;
+}
+
 int main() {
-    String s("Hello"), t(s), u;
-    u = s;
-    cout << s << endl;
-    cout << t << endl;
-    cout << u[0] << endl;
+    String s("NTNU"), t("GOOD"), u;
+    cout << s.size() << endl;
+    const char *p = s.c_str();
+    cout << p << endl;
+    ReadWrite(s);
+    ReadOnly(s);
+    u = s+t;
+    cout << "end\n";
+    // cout << s+t << endl;
+
+    
 }
