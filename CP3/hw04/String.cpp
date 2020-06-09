@@ -35,6 +35,7 @@ String::String(const char *s):size_(strlen(s)), capacity_((size_ > 15) ? size_ :
     strcpy(str_, s);
 };
 size_t String::size() const { return size_; }
+size_t String::capacity() const { return capacity_;}
 const char* String::c_str() const { return str_; }
 const char& String::operator[](size_t i) const { return str_[i]; }
 char& String::operator [] (size_t i) { const_cast<char &> (static_cast<const String &>(*this)[i]);}
@@ -64,41 +65,6 @@ String& String::operator = (char c) {
     strcpy(str_, s);    
     return *this;
 }
-String String::operator + (const String& s) {
-    String tmp(*this);
-    std::cout << "tmp\n";
-    return tmp += s;
-    // String *ns = new String(*this);
-    // (*ns).size_ += s.size_;
-    // if((*ns).size_ > (*ns).capacity_) {
-    //     (*ns).capacity_ <<= 1;
-    // }
-    // (*ns).str_ = new char [(*ns).capacity_];
-    // strcpy((*ns).str_, str_);
-    // strcat((*ns).str_, s.str_);
-    // return *ns;
-}
-// String& String::operator + (const char* s) {
-//     String *ns = new String(*this);
-//     (*ns).size_ = size_ + strlen(s);
-//     (*ns).capacity_ = capacity_;
-//     if((*ns).size_ > (*ns).capacity_) (*ns).capacity_ <<= 1;
-//     (*ns).str_ = new char [(*ns).capacity_];
-//     strcpy((*ns).str_, str_);
-//     strcat((*ns).str_, s);
-//     return *ns;
-// }
-// String& String::operator + (char s) {
-//     String *ns = new String(*this);
-//     (*ns).size_ = size_ + 1;
-//     if((*ns).size_ > (*ns).capacity_) {
-//         (*ns).capacity_ <<= 1;
-//         str_ = static_cast<char*>(realloc(str_, capacity_));
-//     }
-//     strcpy((*ns).str_, str_);
-//     (*ns).str_[(*ns).size_ - 1] = s;
-//     return *ns;    
-// }
 String& String::operator += (const String& s) {
     size_ += s.size_;
     if(size_ > capacity_) {
@@ -126,8 +92,52 @@ String& String::operator += (char s) {
     str_[size_ - 1] = s;
     return *this;
 }
-
-
+String String::operator + (const String& s) {
+    String tmp(*this);
+    return tmp += s;
+}
+String String::operator + (const char* s) {
+    String tmp(*this);
+    return tmp += s;
+}
+String String::operator + (char s) {
+    String tmp(*this);
+    return tmp += s;
+}
+void String::clear() {
+    size_ = 0;
+    delete str_;
+}
+void String::swap(String& s) {
+    String tmp;
+    tmp.size_ = size_;
+    tmp.capacity_ = capacity_;
+    tmp.str_ = str_;
+    size_ = s.size_;
+    capacity_ = s.capacity_;
+    str_ = s.str_;
+    s.size_ = tmp.size_;
+    s.capacity_ = tmp.capacity_;
+    s.str_ = tmp.str_;
+}
+bool operator == (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
+bool operator == (const char* lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
+bool operator == (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
+bool operator != (const String& lhs, const String& rhs);
+bool operator != (const char* lhs, const String& rhs);
+bool operator != (const String& lhs, const char* rhs);
+bool operator < (const String& lhs, const String& rhs);
+bool operator < (const char* lhs, const String& rhs);
+bool operator < (const String& lhs, const char* rhs);
+bool operator <= (const String& lhs, const String& rhs);
+bool operator <= (const char* lhs, const String& rhs);
+bool operator <= (const String& lhs, const char* rhs);
+bool operator > (const String& lhs, const String& rhs);
+bool operator > (const char* lhs, const String& rhs);
+bool operator > (const String& lhs, const char* rhs);
+bool operator >= (const String& lhs, const String& rhs);
+bool operator >= (const char* lhs, const String& rhs);
+bool operator >= (const String& lhs, const char* rhs);
 
 std::ostream& operator << (std::ostream& os, const String& s) {
     os << s.c_str();

@@ -19,8 +19,11 @@ public:
 };
 
 int main() {
-    string a("It is time to write a long sentence! "), b("apple"), c;
-    // printf("%p\n%p\n%p\n", &a, &b, &(a+b));
-    cout << string("Hello").size();
-    
+    string a("It is time to write a long sentence! "), b("apple is really good"), c;
+    printf("%p %p\n", (a.c_str()), (b.c_str()));
+     cout << a << " " << a.size() << " " << a.capacity() << endl;
+    swap(a, b);
+    // c = a;
+    printf("%p %p\n", (a.c_str()), (b.c_str()));
+     cout << a << " " << a.size() << " " << a.capacity() << endl;
 }

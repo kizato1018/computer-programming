@@ -50,14 +50,26 @@ void ReadOnly(const String &str) {
 
 int main() {
     String s("NTNU"), t("GOOD"), u;
-    cout << s.size() << endl;
-    const char *p = s.c_str();
-    cout << p << endl;
-    ReadWrite(s);
-    ReadOnly(s);
-    u = s+t;
-    cout << "end\n";
-    // cout << s+t << endl;
-
+    // cout << s.size() << endl;
+    // const char *p = s.c_str();
+    // cout << p << endl;
+    // ReadWrite(s);
+    // ReadOnly(s);
+    // u = s+t;
     
+    // cout << s+t << endl;
+    cout << "Hello" << endl;
+    // cout << u << " " << u.size() << " " << u.capacity() << endl;
+    // u.clear();
+    // cout << u << " " << u.size() << " " << u.capacity() << endl;
+
+    cout << "end\n";
+    String a("It is time to write a long sentence! "), b("apple is really good"), c;
+    printf("%p %p\n", (a.c_str()), (b.c_str()));
+     cout << a << " " << a.size() << " " << a.capacity() << endl;
+    swap(a, b);
+    // c = a;
+    printf("%p %p\n", (a.c_str()), (b.c_str()));
+     cout << a << " " << a.size() << " " << a.capacity() << endl;
+
 }

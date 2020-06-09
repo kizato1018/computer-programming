@@ -8,8 +8,9 @@ public:
     String()=default;
     String(const String&);
     String(const char*);
-    ~String() {std::cout << str_ << " destruction\n";}
+    ~String()=default; // {std::cout << str_ << " destruction\n";}
     size_t size() const;
+    size_t capacity() const;
     const char* c_str() const;
     const char& operator[](size_t) const;
     char& operator [] (size_t);
@@ -23,7 +24,25 @@ public:
     String operator + (const char*);
     String operator + (const char);
     void clear();
-    void swap(String &);
+    void swap(String&);
+    friend bool operator == (const String&, const String&);
+    friend bool operator == (const char*, const String&);
+    friend bool operator == (const String&, const char*);
+    friend bool operator != (const String&, const String&);
+    friend bool operator != (const char*, const String&);
+    friend bool operator != (const String&, const char*);
+    friend bool operator < (const String&, const String&);
+    friend bool operator < (const char*, const String&);
+    friend bool operator < (const String&, const char*);
+    friend bool operator <= (const String&, const String&);
+    friend bool operator <= (const char*, const String&);
+    friend bool operator <= (const String&, const char*);
+    friend bool operator > (const String&, const String&);
+    friend bool operator > (const char*, const String&);
+    friend bool operator > (const String&, const char*);
+    friend bool operator >= (const String&, const String&);
+    friend bool operator >= (const char*, const String&);
+    friend bool operator >= (const String&, const char*);
     friend std::ostream& operator << (std::ostream&, const String&);
 private:
     char *str_ = nullptr;
