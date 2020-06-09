@@ -1,14 +1,13 @@
 #ifndef __MYSTRING_H__
 #define __MYSTRING_H__
-#include <iostream>
 
 typedef unsigned long size_t;
 class String {
 public:
-    String()=default;
+    String();
     String(const String&);
     String(const char*);
-    ~String()=default; // {std::cout << str_ << " destruction\n";}
+    ~String() { delete str_; };
     size_t size() const;
     size_t capacity() const;
     const char* c_str() const;
@@ -44,6 +43,7 @@ public:
     friend bool operator >= (const char*, const String&);
     friend bool operator >= (const String&, const char*);
     friend std::ostream& operator << (std::ostream&, const String&);
+    friend std::istream& operator >> (std::istream&, String&);
 private:
     char *str_ = nullptr;
     size_t size_ = 0, capacity_ = 0;

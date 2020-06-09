@@ -1,39 +1,16 @@
+#include <iostream>
 #include <cstring>
 #include <cstdlib>
 #include "String.h"
 
-// class String {
-// public:
-//     String();
-//     String(const String &s):str_(s.str_) {};
-//     String(const char *s):str_(const_cast<char *>(s)) {};
-//     ~String();
-//     size_t size() const;
-//     const char* c_str() const;
-//     const char& operator[](size_t i) const;
-//     char& operator [] (size_t i);
-//     String& operator += (const String&);
-//     String& operator += (const char*);
-//     String& operator += (char);
-//     void clear();
-//     String& operator = (const String&);
-//     String& operator = (const char*);
-//     String& operator = (char);
-//     void swap(String &);
-//     friend std::ostream& operator << (std::ostream& os, const String &);
-// private:
-//     char *str_ = nullptr;
-//     size_t size_ = 0, capacity_ = 0;
-// };
-
-String::String(const String &s):size_(s.size_), capacity_(s.capacity_) {
-    str_ = new char[capacity_];
+String::String():size_(0), capacity_(15), str_(new char[15]) {}
+String::String(const String &s):size_(s.size_), capacity_(s.capacity_), str_(new char[s.capacity_]) {
     strcpy(str_, s.str_);
-};
+}
 String::String(const char *s):size_(strlen(s)), capacity_((size_ > 15) ? size_ : 15) {
     str_ = new char[capacity_];
     strcpy(str_, s);
-};
+}
 size_t String::size() const { return size_; }
 size_t String::capacity() const { return capacity_;}
 const char* String::c_str() const { return str_; }
@@ -83,13 +60,13 @@ String& String::operator += (const char* s) {
     strcat(str_, s);
     return *this;
 }
-String& String::operator += (char s) {
-    size_ = size_ + 1;
+String& String::operator += (char c) {
+    size_ += 1;
     if(size_ > capacity_) {
         capacity_ <<= 1;
-        str_ = (char *)realloc(str_, capacity_);
+        str_ = (char*)realloc(str_, capacity_);
     }
-    str_[size_ - 1] = s;
+    str_[size_ - 1] = c;
     return *this;
 }
 String String::operator + (const String& s) {
@@ -106,7 +83,7 @@ String String::operator + (char s) {
 }
 void String::clear() {
     size_ = 0;
-    delete str_;
+    str_[0] = 0;
 }
 void String::swap(String& s) {
     String tmp;
@@ -119,27 +96,36 @@ void String::swap(String& s) {
     s.size_ = tmp.size_;
     s.capacity_ = tmp.capacity_;
     s.str_ = tmp.str_;
+    tmp.str_ = nullptr;
 }
 bool operator == (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
-bool operator == (const char* lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
-bool operator == (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs.str_) == 0;}
-bool operator != (const String& lhs, const String& rhs);
-bool operator != (const char* lhs, const String& rhs);
-bool operator != (const String& lhs, const char* rhs);
-bool operator < (const String& lhs, const String& rhs);
-bool operator < (const char* lhs, const String& rhs);
-bool operator < (const String& lhs, const char* rhs);
-bool operator <= (const String& lhs, const String& rhs);
-bool operator <= (const char* lhs, const String& rhs);
-bool operator <= (const String& lhs, const char* rhs);
-bool operator > (const String& lhs, const String& rhs);
-bool operator > (const char* lhs, const String& rhs);
-bool operator > (const String& lhs, const char* rhs);
-bool operator >= (const String& lhs, const String& rhs);
-bool operator >= (const char* lhs, const String& rhs);
-bool operator >= (const String& lhs, const char* rhs);
-
+bool operator == (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) == 0;}
+bool operator == (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) == 0;}
+bool operator != (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) != 0;}
+bool operator != (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) != 0;}
+bool operator != (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) != 0;}
+bool operator < (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) < 0;}
+bool operator < (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) < 0;}
+bool operator < (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) < 0;}
+bool operator <= (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) <= 0;}
+bool operator <= (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) <= 0;}
+bool operator <= (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) <= 0;}
+bool operator > (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) > 0;}
+bool operator > (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) > 0;}
+bool operator > (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) > 0;}
+bool operator >= (const String& lhs, const String& rhs) { return strcmp(lhs.str_, rhs.str_) >= 0;}
+bool operator >= (const char* lhs, const String& rhs) { return strcmp(lhs, rhs.str_) >= 0;}
+bool operator >= (const String& lhs, const char* rhs) { return strcmp(lhs.str_, rhs) >= 0;}
 std::ostream& operator << (std::ostream& os, const String& s) {
     os << s.c_str();
     return os;
+}
+std::istream& operator >> (std::istream& is, String& s) {
+    char ch = is.get();
+    while(ch == ' ' || ch == '\n') ch = is.get();
+    while(ch != ' ' && ch != '\n' && ch != EOF) { 
+        s += ch;
+        ch = is.get();
+    }
+    return is;
 }
