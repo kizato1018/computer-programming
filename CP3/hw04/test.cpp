@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 
+
 using namespace std;
 
 string& New_S(const char* cs) {
@@ -19,9 +20,13 @@ public:
 };
 
 int main() {
-    string a;
-    cin >> a;
-    cout << a;
+    string ab;
+
+
+
+
+    cin >> ab;
+    cout << ab;
     // string a("It is time to write a long sentence! "), b("apple is really good"), c;
     // printf("%p %p\n", (a.c_str()), (b.c_str()));
     //  cout << a << " " << a.size() << " " << a.capacity() << endl;
