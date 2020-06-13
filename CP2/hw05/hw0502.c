@@ -36,20 +36,28 @@ void Show(Net* n) {
 void Process(FILE* fp) {
     static Net net[64];
     char buffer[1024] = {};
+    char n[1024] = {};
     size_t cnt = 0;
     uint64_t p;
-
+    
     while(fscanf(fp, "%s", net[cnt].name) && fgets(buffer, 1024, fp)) {
+    
+        // printf("||%s||\n", net[cnt].name);
+        // net[cnt].name[strlen(net[cnt].name) - 1] = 0;
+        fscanf(fp, " inet addr:%s ", net[cnt].inet); fgets(buffer, 1024, fp);
+        // fgets(buffer, 1024, fp);
+        // printf("{%s}\n", buffer);
+        // fgets(buffer, 1024, fp);
+        // printf("{%s}\n", buffer);
+        // fscanf(fp, " RX packets %lu bytes %lu ", &p, &net[cnt].RX); fgets(buffer, 1024, fp);
         // printf("%s\n", buffer);
-        net[cnt].name[strlen(net[cnt].name) - 1] = 0;
-        fscanf(fp, " inet %s ", net[cnt].inet); fgets(buffer, 1024, fp);
+        // fscanf(fp, " TX packets %lu bytes %lu ", &p, &net[cnt].TX); fgets(buffer, 1024, fp);
         // printf("%s\n", buffer);
-        fscanf(fp, " RX packets %lu bytes %lu ", &p, &net[cnt].RX); fgets(buffer, 1024, fp);
-        // printf("%s\n", buffer);
-        fscanf(fp, " TX packets %lu bytes %lu ", &p, &net[cnt].TX); fgets(buffer, 1024, fp);
-        // printf("%s\n", buffer);
-        if(net[cnt].RX_l == 0) { net[cnt].RX_l = net[cnt].RX; }
-        if(net[cnt].TX_l == 0) { net[cnt].TX_l = net[cnt].TX; }
+        fscanf(fp, " RX bytes:%lu (%*f %*c%*c) TX bytes:%lu ", &net[cnt].RX, &net[cnt].TX); fgets(buffer, 1024, fp);
+        // printf("||%s||\n", buffer);
+        // printf("%lu %lu\n", net[cnt].TX, net[cnt].RX);
+        // if(net[cnt].RX_l == 0) { net[cnt].RX_l = net[cnt].RX; }
+    // if(net[cnt].TX_l == 0) { net[cnt].TX_l = net[cnt].TX; }
 
         Show(net+cnt);
         net[cnt].RX_l = net[cnt].RX;
@@ -64,7 +72,7 @@ int main() {
     size_t cnt = 0;
 
     while(1) {
-        if((fp = popen("ifconfig | grep -e 'inet ' -e 'flags' -e 'RX p' -e 'TX p'", "r")) == NULL) {
+        if((fp = popen("ifconfig | grep -e 'inet addr' -e 'Link encap' -e 'RX byte'", "r")) == NULL) {
             printf("Error\n");
             return -1;
         }
