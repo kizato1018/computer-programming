@@ -34,7 +34,27 @@ struct option long_options[] = {
 };
 
 void show(Flight f) {
-    printf("%s %s-->%s %s %s\n", f.time, f.dep, f.arr, f.airline, f.flight);
+    if(f.time[0] == 0)
+        printf("NULL ");
+    else 
+        printf("%s ",f.time);
+    if(f.dep[0] == 0)
+        printf("NULL-->");
+    else 
+        printf("%s-->", f.dep);
+    if(f.arr[0] == 0)
+        printf("NULL ");
+    else 
+        printf("%s ", f.arr);
+    if(f.airline[0] == 0)
+        printf("NULL ");
+    else 
+        printf("%s ", f.airline);
+    if(f.flight[0] == 0)
+        printf("NULL\n");
+    else 
+        printf("%s\n", f.flight);
+    // printf("%s %s-->%s %s %s\n", f.time, f.dep, f.arr, f.airline, f.flight);
 }
 
 
@@ -88,6 +108,7 @@ int main(int argc, char* argv[]) {
     
     Flight all_flight[10000];
     char context[100000] = {}, c;
+    char tmp[100000] = {};
     char *str = NULL;
     char *token = NULL;
     char *result = NULL;
@@ -107,41 +128,62 @@ int main(int argc, char* argv[]) {
         size = 0;
         if(c == '{') {
             while((c = fgetc(fp)) != '}') context[size++] = c;
+            // printf("|| context: \n%s ||\n\n", context);
         }
         if(size > 1) {
-            if((str = strstr(context, "ScheduleArrivalTime")) == NULL) break;
-            token = strtok(str, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            strcpy(all_flight[flight_cnt].time, token);
+            strcpy(tmp, context);
+            if((str = strstr(tmp, "ScheduleArrivalTime")) != NULL) {
+
+                token = strtok(str, "\"");
+                token = strtok(NULL, "\"");
+                token = strtok(NULL, "\"");
+                if(token[0] != ',') 
+                    strcpy(all_flight[flight_cnt].time, token);
+                else 
+                    all_flight[flight_cnt].time[0] = 0;
+            }
             // printf("%s ", all_flight[flight_cnt].time);
-            str = strstr(context, "DepartureAirportID");
-            token = strtok(str, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            strcpy(all_flight[flight_cnt].dep, token);
+            strcpy(tmp, context);
+            if((str = strstr(tmp, "DepartureAirportID")) != NULL) {
+                token = strtok(str, "\"");
+                token = strtok(NULL, "\"");
+                token = strtok(NULL, "\"");
+                if(token[0] != ',') 
+                    strcpy(all_flight[flight_cnt].dep, token);
+                else 
+                    all_flight[flight_cnt].dep[0] = 0;
+            }
             // printf("%s-->", all_flight[flight_cnt].dep);
-            str = strstr(context, "ArrivalAirportID");
-            token = strtok(str, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            strcpy(all_flight[flight_cnt].arr, token);
+            strcpy(tmp, context);
+            if((str = strstr(tmp, "ArrivalAirportID")) != NULL) {
+                token = strtok(str, "\"");
+                token = strtok(NULL, "\"");
+                token = strtok(NULL, "\"");
+                // token = strtok(NULL, "\"");
+                if(token[0] != ',') 
+                    strcpy(all_flight[flight_cnt].arr, token);
+                else 
+                    all_flight[flight_cnt].arr[0] = 0;
+            }
             // printf("%s ", all_flight[flight_cnt].arr);
-            str = strstr(context, "AirlineID");
-            token = strtok(str, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            if(token[0] != ',') 
-                strcpy(all_flight[flight_cnt].airline, token);
-            else 
-                all_flight[flight_cnt].airline[0] = 0;
+            strcpy(tmp, context);
+            if((str = strstr(tmp, "AirlineID")) != NULL) {
+                token = strtok(str, "\"");
+                token = strtok(NULL, "\"");
+                token = strtok(NULL, "\"");
+                if(token[0] != ',') 
+                    strcpy(all_flight[flight_cnt].airline, token);
+                else 
+                    all_flight[flight_cnt].airline[0] = 0;
+            }
             // printf("%s ", all_flight[flight_cnt].airline);
-            str = strstr(context, "FlightNumber");
-            token = strtok(str, "\"");
-            token = strtok(NULL, "\"");
-            token = strtok(NULL, "\"");
-            strcpy(all_flight[flight_cnt].flight, token);
+            strcpy(tmp, context);
+            if((str = strstr(tmp, "FlightNumber")) != NULL) {
+                token = strtok(str, "\"");
+                token = strtok(NULL, "\"");
+                token = strtok(NULL, "\"");
+                strcpy(all_flight[flight_cnt].flight, token);
+            }
             // printf("%s\n", all_flight[flight_cnt].flight);
             ++flight_cnt;
         }
@@ -165,7 +207,7 @@ int main(int argc, char* argv[]) {
     
     for(size_t i = 0; i < flight_cnt; ++i)
         show(all_flight[i]);
-
+    // printf("cnt: %d\n", flight_cnt);
     fclose(fp);
     remove("tmp.txt");
     

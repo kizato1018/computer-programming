@@ -1,5 +1,0 @@
-"ScheduleArrivalTime":"123"
-"ScheduleArrivalTime":"456"
-"ScheduleArrivalTime":"789"
-"ScheduleArrivalTime":""12345
-"ScheduleArrivalTime":"000"
