@@ -52,8 +52,9 @@ int main()
     FILE	*pFile2 = NULL;
     char input_file[128] = { 0 };
     char output_file[128] = { 0 };
-
+    printf("Please enter the input image name: ");
     fgets(input_file , 128 , stdin);
+    printf("Please enter the output image name: ");
     fgets(output_file , 128 , stdin);
     if(input_file[strlen(input_file)-1] == '\n')
     	input_file[strlen(input_file)-1] = 0 ;
@@ -105,7 +106,7 @@ int main()
 
     	 fwrite(&modified , 2 , 1 , pFile2);
     }
-    
+    printf("Done!\n");
                 
     fclose( pFile );
     fclose( pFile2 );
