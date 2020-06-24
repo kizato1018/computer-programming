@@ -24,5 +24,7 @@ void show_card(Player const *player);
 bool check_card(Player const *player, const int32_t pick);
 
 void CSIE_40847025S_setup(void);
+void CSIE_40847025S_deal(void);
+void CSIE_40847025S_choose(void);
 
 #endif
