@@ -103,12 +103,12 @@ void show_score(Game const *game) {
     return;
 }
 
-void show_table(Game const *game) {
-    printf("Table:\n");
+void show_table(Game const *game, FILE *out) {
+    fprintf(out, "Table:\n");
     for(int32_t i = 0; i < 4; i++) {
         for(int32_t j = 0; j < game->table_cnt[i]; ++j) {
-            printf("%4d", game->table[i][j]);
+            fprintf(out, "%4d", game->table[i][j]);
         }
-        puts("");
+        fputs("\n", out);
     }
 }

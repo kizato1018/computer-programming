@@ -9,6 +9,10 @@
 
 typedef struct _Player{
     int32_t hand[10];
+    void (*setup)(int32_t id);
+    void (*deal)( const int32_t card[10] );
+    int32_t (*pick)( const int32_t table[4][5], const int32_t score[2], const int32_t last[8] );
+    int32_t (*choose)( const int32_t table[4][5], int32_t card );
 }Player;
 
 int32_t agent_cmp(void const *a, void const *b);

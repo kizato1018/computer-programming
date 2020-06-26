@@ -148,3 +148,11 @@ static inline int list_empty(const struct list_head *head)
 #define list_for_each_prev(pos, head) \
     for (pos = (head)->prev; pos != (head); pos = pos->prev)
 
+static inline void node_swap(struct list_head *a, struct list_head *b) {
+    a->prev->next = b;
+    b->next->prev = a;
+    a->next = b->next;
+    b->prev = a->prev;
+    a->prev = b;
+    b->next = a;
+}

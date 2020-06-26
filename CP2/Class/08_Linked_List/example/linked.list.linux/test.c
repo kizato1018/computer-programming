@@ -59,33 +59,61 @@ void printCharacter( sCharacter *one )
     return;
 }
 
+void list_sort(struct list_head *head) {
+    LIST_HEAD( sorted_list );
+
+    while(!list_empty(head)) {
+        int32_t Max = -1;
+        struct list_head *Max_node = NULL; 
+        struct list_head *listptr = NULL;
+        list_for_each( listptr, head )
+        {
+            sCharacter *cptr = list_entry( listptr, sCharacter, list );
+            if(cptr->id >= Max) {
+                Max = cptr->id;
+                Max_node = listptr;
+            }
+            // printCharacter( cptr );
+        } 
+        list_del(Max_node);
+        list_add(Max_node, &sorted_list);
+    }
+    list_add(head, &sorted_list);
+    list_del(&sorted_list);
+}
+
 int main()
 {
     LIST_HEAD( char_list_head );    
     
     srand( time( 0 ) );
     
-    for( int32_t i = 0 ; i < 1000 ; i++ )
+    for( int32_t i = 0 ; i < 10 ; i++ )
     {
         sCharacter *newComer = allocCharacter( i + 1 );
         
         list_add( &( newComer -> list ), &char_list_head );
     }
+
+    list_sort(&char_list_head);
     
     struct list_head *listptr = NULL;
     list_for_each( listptr, &char_list_head )
     {
         sCharacter *cptr = list_entry( listptr, sCharacter, list );
+
+        // if(cptr->id == 1)
+            // node_swap(listptr, listptr->next);
         printCharacter( cptr );
     } 
     
-    /*
-    list_for_each_prev( listptr, &char_list_head )
-    {
-        sCharacter *cptr = list_entry( listptr, sCharacter, list );
-        printCharacter( cptr );
-    } 
-    */
+    
+    // list_for_each_prev( listptr, &char_list_head )
+    // {
+    //     sCharacter *cptr = list_entry( listptr, sCharacter, list );
+    //     printCharacter( cptr );
+    // } 
+    
 
     return 0;
 }

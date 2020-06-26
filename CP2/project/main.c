@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+#include <time.h>
 #include "game.h"
 #include "agent.h"
 #define NL puts("")
@@ -18,7 +20,7 @@ void show(Game *game, Player *player, int32_t round) {
     printf("Round %d\n", round);
     show_score(game);
     NL;
-    show_table(game);
+    show_table(game, stdout);
     NL;
     printf("Your hand cards:\n");
     show_card(player);
@@ -27,25 +29,39 @@ void show(Game *game, Player *player, int32_t round) {
 
 int main() {
     // declare
+    FILE *log = NULL;
     int32_t player_num = 0;
     bool gameover = false;
     Game game;
-    Player *player;
-    Player *CPU;
-    Card *pick;
+    Player *player = NULL;
+    Player *CPU = NULL;
+    Card *pick = NULL;
     int32_t player_pick = 0;
     int32_t round = 1;
     int32_t rank = 1;
+    char buffer[1024] = {0};
+    time_t now;
 
     // Start
+    time(&now);
+    if((log = fopen("log.dat", "a")) == NULL) {
+        printf("log error\n");
+        return 1;
+    }
+    fprintf(log, "%s", ctime(&now));
+    system("clear");
     while(1) {
         printf("Please enter the number of players(2~10): ");
-        scanf("%d", &player_num);
+        fgets(buffer, sizeof(buffer), stdin);
+        player_num = atoi(buffer);
         if(player_num < 2 || player_num > 10) {
             printf("Wrong players number.\n");
             system("clear");
         }
-        else break;
+        else {
+            fprintf(log, "player:%d\n", player_num);
+            break;
+        }
     }
     Game_setup(&game, player_num);
     player = calloc(1, sizeof(Player));
@@ -53,8 +69,10 @@ int main() {
     pick = calloc(player_num, sizeof(Card));
     for(int32_t i = 0; i < player_num; ++i) {
         int32_t cards[10];
+        fprintf(log, "%d:", i);
         for(int32_t j = 0; j < 10; ++j) {
             cards[j] = deal_card(&game);
+            fprintf(log, "%3d%c", cards[j], " \n"[j == 9]);
         }
         if(i == 0)
             agent_deal(player, cards);
@@ -70,24 +88,33 @@ int main() {
 
         // show information
         show(&game, player, round);
-
+        fprintf(log, "\n%d\nScore:\n", round);
+        for(int32_t i = 0; i < player_num; ++i)
+            fprintf(log, "%d:%d %c", i, game.score[i], " \n"[i == player_num-1]);
+        show_table(&game, log);
         // pick card
+        fprintf(log, "pick:\n");
         bool isPick = false;
         while(!isPick) {
             printf("pick your card: ");
-            scanf("%d", &player_pick);
+            fgets(buffer, sizeof(buffer), stdin);
+            player_pick = atoi(buffer);
             if(!check_card(player, player_pick)) {
+                if(strcmp(buffer, "exit\n") == 0)
+                    goto end;
                 printf("pick wrong card.\n");
             }
             else {
                 isPick = true;
                 pick[0].card = player_pick;
                 pick[0].id = 0;
+                fprintf(log, "%d:%d  ", 0, pick[0].card);
             }
         }
         for(int i = 0; i < player_num-1; ++i) {
             pick[i+1].card = agent_pickcard(CPU+i, game.table);
             pick[i+1].id = i+1;
+            fprintf(log, "%d:%d %c", i+1, pick[i+1].card, " \n"[i == player_num-2]);
         }
 
         // deal card
@@ -162,6 +189,9 @@ int main() {
         printf("You win the %dst place!\n", rank);
 
     // end 
+end:
+    fprintf(log, "---------------------------------------\n");
+    fclose(log);
     free(player);
     free(CPU);
     free(pick);

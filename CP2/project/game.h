@@ -1,5 +1,6 @@
 #ifndef __GAME_H__
 #define __GAME_H__
+#include <stdio.h>
 #include <memory.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -29,6 +30,6 @@ bool place_card(Game *game, int32_t id, int32_t pick);
 
 void show_score(Game const *game);
 
-void show_table(Game const *game);
+void show_table(Game const *game, FILE*);
 
 #endif
