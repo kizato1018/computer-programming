@@ -15,9 +15,9 @@ int32_t agent_cmp(void const *a, void const *b);
 
 void agent_deal(Player *player, const int32_t cards[10]);
 
-int32_t agent_pickcard(Player const *player, const int32_t table[4][5]);
+int32_t agent_pick_normal(Player const *player, const int32_t table[4][5]);
 
-int32_t agent_pickrow(const int32_t table[4][5]);
+int32_t agent_choose_normal(const int32_t table[4][5]);
 
 void show_card(Player const *player);
 

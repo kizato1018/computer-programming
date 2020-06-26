@@ -1,5 +1,6 @@
 #include "game.h"
 #include <stdio.h>
+#include <unistd.h>
 
 int32_t game_cmp(const void *a, const void *b) {
     return *(int32_t *)a - *(int32_t *)b;
@@ -57,9 +58,11 @@ void Game_setup(Game *game, int32_t player_num) {
     game->score = calloc(player_num, sizeof(int32_t));
     memset(game->score, 0, player_num * sizeof(int32_t));
     game->player_num = player_num;
+    
 
     // pick 4 card on table
     for(int i = 0; i < 4 ; ++i) {
+        memset(game->table[i], 0, sizeof(game->table[i]));
         pick = deal_card(game);
         new_row(game, i, pick);
     }

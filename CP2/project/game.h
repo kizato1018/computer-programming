@@ -18,19 +18,12 @@ typedef struct _Game {
 }Game;
 
 int32_t game_cmp(const void *a, const void *b);
-
 int32_t deal_card(Game *game);
-
 int32_t get_point(int32_t const card);
-
 int new_row(Game *game, int32_t const row, int32_t const front);
-
 void Game_setup(Game *game, int32_t player_num);
-
 bool place_card(Game *game, int32_t id, int32_t pick);
-
 void show_score(Game const *game);
-
 void show_table(Game const *game, FILE*);
 
 #endif

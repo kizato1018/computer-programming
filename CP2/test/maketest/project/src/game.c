@@ -18,7 +18,7 @@ int32_t deal_card(Game *game) {
     return deal+1;
 }
 
-int32_t get_point(int32_t const card) {
+int32_t agent_get_point(int32_t const card) {
     if(card == 55) {
         return 7;
     }
@@ -39,7 +39,7 @@ int new_row(Game *game, int32_t const row, int32_t const front) {
     int32_t score = 0;
     for(int32_t i = 0; i < 5; ++i) {
         if(game->table[row][i] == 0) break;
-        score += get_point(game->table[row][i]);
+        score += agent_get_point(game->table[row][i]);
         game->table[row][i] = 0;
     }
     game->table[row][0] = front;

@@ -86,7 +86,7 @@ int main() {
             }
         }
         for(int i = 0; i < player_num-1; ++i) {
-            pick[i+1].card = agent_pickcard(CPU+i, game.table);
+            pick[i+1].card = agent_pick_normal(CPU+i, game.table);
             pick[i+1].id = i+1;
         }
 
@@ -131,7 +131,7 @@ int main() {
                     }
                 }
                 else {
-                    row = agent_pickrow(game.table);
+                    row = agent_choose_normal(game.table);
                 }
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
             }

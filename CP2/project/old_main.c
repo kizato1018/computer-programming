@@ -1,23 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+#include <time.h>
 #include "game.h"
 #include "agent.h"
 #include "server.h"
 #define NL puts("")
-
-
-// int main() {
-//     CData data;
-//     socket_init();
-//     socket_connect();
-//     while(1) {
-//         data = socket_get();
-//         print_CData(&data);
-//     }
-//     return 0;
-// }
-
-
 
 typedef struct _Card{
     int32_t id;
@@ -26,6 +14,24 @@ typedef struct _Card{
 
 int card_cmp(const void *a, const void *b) {
     return (*(Card *)a).card - (*(Card *)b).card;
+}
+
+int input(int *target, bool mode) { 
+    // return 0 is pick, 1 is exit.
+    // mode 0 is stdin, 1 is socket. 
+    CData cdata;
+    char buffer[1024];
+    if(mode == 0) {
+        fgets(buffer, sizeof(buffer), stdin);
+    }
+    else if(mode == 1) {
+        socket_get(&cdata);
+        strcpy(buffer, cdata.input);
+    }
+    if(strcmp(buffer, "exit\n") == 0)
+        return 1;
+    *target = atoi(buffer);
+    return 0;
 }
 
 void show(Game *game, Player *player, int32_t round) {
@@ -42,48 +48,84 @@ void show(Game *game, Player *player, int32_t round) {
 
 int main() {
     // declare
+    FILE *log = NULL;
     int32_t player_num = 0;
     bool gameover = false;
-    bool online = false;
     Game game;
-    Player *player;
-    Player *CPU;
-    Card *pick;
+    Player *player = NULL;
+    Player *CPU = NULL;
+    Card *pick = NULL;
     int32_t player_pick = 0;
     int32_t round = 1;
     int32_t rank = 1;
-    CData data;
+    char buffer[1024] = {0};
+    time_t now;
+    bool online = false;
+    int32_t (*Fpick)( const int32_t table[4][5], const int32_t score[2], const int32_t last[8] );
+    int32_t (*Fchoose)( const int32_t table[4][5], int32_t card );
 
     // Start
-    socket_init();
-    socket_connect();    
-//    while(1) {
-
-    socket_get(&data);
-    print_CData(&data);
-//    }
+    time(&now);
+    if((log = fopen("log.dat", "a")) == NULL) {
+        printf("log error\n");
+        return 1;
+    }
+    system("clear");
     while(1) {
+        printf("Please enter the difficulty(1 easy, 2 normal, 3 hard): ");
+        if(input(&(game.difficulty), 0) == 1)
+            goto end;
+        if(game.difficulty == 1) {
+            Fpick = agent_pick_easy;
+            Fchoose = agent_choose_easy;
+            break;
+        }
+        else if(game.difficulty == 2) {
+            Fpick = agent_pick_normal;
+            Fchoose = agent_choose_normal;
+            break;
+        }
+        else if(game.difficulty == 3) {
+            Fpick = agent_pick_hard;
+            Fchoose = agent_choose_hard;
+            break;
+        }
+        else
+            printf("wrong difficulty\n");
+    }
+    while(1) {
+        
         printf("Please enter the number of players(2~10): ");
-        scanf("%d", &player_num);
+        // fgets(buffer, sizeof(buffer), stdin);
+        // player_num = atoi(buffer);
+        if(input(&player_num, 0) == 1)
+            goto end;
         if(player_num < 2 || player_num > 10) {
             printf("Wrong players number.\n");
-            system("clear");
+            // system("clear");
         }
-        else break;
+        else {
+            fprintf(log, "player:%d\n", player_num);
+            break;
+        }
     }
+    fprintf(log, "%s", ctime(&now));
     Game_setup(&game, player_num);
     player = calloc(1, sizeof(Player));
     CPU = calloc(player_num-1, sizeof(Player));
     pick = calloc(player_num, sizeof(Card));
     for(int32_t i = 0; i < player_num; ++i) {
         int32_t cards[10];
+        fprintf(log, "%d:", i);
         for(int32_t j = 0; j < 10; ++j) {
             cards[j] = deal_card(&game);
+            fprintf(log, "%3d%c", cards[j], " \n"[j == 9]);
         }
         if(i == 0)
             agent_deal(player, cards);
-        else 
+        else {
             agent_deal(CPU+i-1, cards);
+        }
     }
 
     // Game
@@ -94,16 +136,19 @@ int main() {
 
         // show information
         show(&game, player, round);
-
+        fprintf(log, "\n%d\nScore:\n", round);
+        for(int32_t i = 0; i < player_num; ++i)
+            fprintf(log, "%d:%d %c", i, game.score[i], " \n"[i == player_num-1]);
+        show_table(&game, log);
         // pick card
+        fprintf(log, "pick:\n");
         bool isPick = false;
         while(!isPick) {
             printf("pick your card: ");
-            //scanf("%d", &player_pick);
-            if(socket_get(&data) == 0)
-                ;
-            print_CData(&data);
-            player_pick = data.input;
+            if(input(&player_pick, 0) == 1)
+                goto end;
+            // fgets(buffer, sizeof(buffer), stdin);
+            // player_pick = atoi(buffer);
             if(!check_card(player, player_pick)) {
                 printf("pick wrong card.\n");
             }
@@ -111,29 +156,31 @@ int main() {
                 isPick = true;
                 pick[0].card = player_pick;
                 pick[0].id = 0;
+                fprintf(log, "%d:%d  ", 0, pick[0].card);
             }
         }
         for(int i = 0; i < player_num-1; ++i) {
-            pick[i+1].card = agent_pick_grandma(CPU+i, game.table);
+            pick[i+1].card = agent_pick_normal(CPU+i, game.table);
             pick[i+1].id = i+1;
+            fprintf(log, "%d:%d %c", i+1, pick[i+1].card, " \n"[i == player_num-2]);
         }
 
-        // deal card
-        printf("deal card\n");
-        for(int32_t i = 0; i < player_num; ++i) {
-            if(i == 0) {
-                index = bsearch(&(pick[i].card), player->hand, 10, sizeof(int32_t), agent_cmp);
-                *index = 0;
-                // *index = deal_card(&game);
-                agent_deal(player, player->hand);
-            }
-            else {
-                index = bsearch(&(pick[i].card), CPU[i-1].hand, 10, sizeof(int32_t), agent_cmp);
-                *index = 0;
-                // *index = deal_card(&game);
-                agent_deal(CPU+i-1, CPU[i-1].hand);
-            }
-        }
+        // // deal card
+        // printf("deal card\n");
+        // for(int32_t i = 0; i < player_num; ++i) {
+        //     if(i == 0) {
+        //         index = bsearch(&(pick[i].card), player->hand, 10, sizeof(int32_t), agent_cmp);
+        //         *index = 0;
+        //         // *index = deal_card(&game);
+        //         agent_deal(player, player->hand);
+        //     }
+        //     else {
+        //         index = bsearch(&(pick[i].card), CPU[i-1].hand, 10, sizeof(int32_t), agent_cmp);
+        //         *index = 0;
+        //         // *index = deal_card(&game);
+        //         agent_deal(CPU+i-1, CPU[i-1].hand);
+        //     }
+        // }
     
         // place card
         qsort(pick, player_num, sizeof(Card), card_cmp);
@@ -151,10 +198,9 @@ int main() {
                     printf("Your card is smaller than all row.\n");
                     while(!isPick) {
                         printf("Pick one row (1~4): ");
-                        //scanf("%d", &row);
-                        while(socket_get(&data))
-                        print_CData(&data);
-                        row = data.input;
+                        // scanf("%d", &row);
+                        if(input(&row, 0) == 1)
+                            goto end;
                         if(row < 1 || row > 4) 
                             printf("Wrong input.\n");
                         else
@@ -162,7 +208,7 @@ int main() {
                     }
                 }
                 else {
-                    row = agent_choose_grandma(game.table);
+                    row = agent_choose_normal(game.table);
                 }
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
             }
@@ -193,6 +239,9 @@ int main() {
         printf("You win the %dst place!\n", rank);
 
     // end 
+end:
+    fprintf(log, "---------------------------------------\n");
+    fclose(log);
     free(player);
     free(CPU);
     free(pick);

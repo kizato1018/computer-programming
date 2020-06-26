@@ -16,15 +16,16 @@ int card_cmp(const void *a, const void *b) {
     return (*(Card *)a).card - (*(Card *)b).card;
 }
 
-int input(int *target, int mode) { 
+int32_t input(int32_t *target, int8_t mode) { 
     // return 0 is pick, 1 is exit.
-    // mode 0 is stdin, 1 is socket. 
+    // mode 0 is none, 1 is stdin, 2 is socket. 
+    if(mode == 0) return 0;
     CData cdata;
     char buffer[1024];
-    if(mode == 0) {
+    if(mode == 1) {
         fgets(buffer, sizeof(buffer), stdin);
     }
-    else if(mode == 1) {
+    else if(mode == 2) {
         socket_get(&cdata);
         strcpy(buffer, cdata.input);
     }
@@ -53,13 +54,14 @@ int main() {
     bool gameover = false;
     Game game;
     Player *player = NULL;
-    Player *CPU = NULL;
     Card *pick = NULL;
-    int32_t player_pick = 0;
     int32_t round = 1;
     int32_t rank = 1;
     char buffer[1024] = {0};
     time_t now;
+    bool online = false;
+    int32_t (*Fpick)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, int8_t mode));
+    int32_t (*Fchoose)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, int8_t mode));
 
     // Start
     time(&now);
@@ -69,14 +71,33 @@ int main() {
     }
     system("clear");
     while(1) {
+        printf("Please enter the difficulty(1 easy, 2 normal, 3 hard): ");
+        if(input(&(game.difficulty), 1) == 1)
+            goto end;
+        if(game.difficulty == 1) {
+            Fpick = agent_pick_easy;
+            Fchoose = agent_choose_mother;
+            break;
+        }
+        else if(game.difficulty == 2) {
+            Fpick = agent_pick_grandma;
+            Fchoose = agent_choose_grandma;
+            break;
+        }
+        else if(game.difficulty == 3) {
+            Fpick = agent_pick_father;
+            Fchoose = agent_choose_father;
+            break;
+        }
+        else
+            printf("wrong difficulty\n");
+    }
+    while(1) {
         printf("Please enter the number of players(2~10): ");
-        // fgets(buffer, sizeof(buffer), stdin);
-        // player_num = atoi(buffer);
-        if(input(&player_num, 0) == 1)
+        if(input(&player_num, 1) == 1)
             goto end;
         if(player_num < 2 || player_num > 10) {
             printf("Wrong players number.\n");
-            system("clear");
         }
         else {
             fprintf(log, "player:%d\n", player_num);
@@ -85,20 +106,26 @@ int main() {
     }
     fprintf(log, "%s", ctime(&now));
     Game_setup(&game, player_num);
-    player = calloc(1, sizeof(Player));
-    CPU = calloc(player_num-1, sizeof(Player));
+    player = calloc(player_num, sizeof(Player));
     pick = calloc(player_num, sizeof(Card));
     for(int32_t i = 0; i < player_num; ++i) {
+        player[i].setup = agent_setup;
+        player[i].deal = agent_deal;
+        if(i == 0) {
+            player[i].pick = player_pick;
+            player[i].choose = player_choose;
+        }
+        else {
+            player[i].pick = Fpick;
+            player[i].choose = Fchoose;
+        }
         int32_t cards[10];
         fprintf(log, "%d:", i);
         for(int32_t j = 0; j < 10; ++j) {
             cards[j] = deal_card(&game);
             fprintf(log, "%3d%c", cards[j], " \n"[j == 9]);
         }
-        if(i == 0)
-            agent_deal(player, cards);
-        else 
-            agent_deal(CPU+i-1, cards);
+        player[i].deal(player+i, cards);
     }
 
     // Game
@@ -115,44 +142,12 @@ int main() {
         show_table(&game, log);
         // pick card
         fprintf(log, "pick:\n");
-        bool isPick = false;
-        while(!isPick) {
-            printf("pick your card: ");
-            if(input(&player_pick, 0) == 1)
+        for(int i = 0; i < player_num; ++i) {
+            pick[i].card = player[i].pick(player+i, game.table, input);
+            pick[i].id = i;
+            if(pick[i].card == -1)
                 goto end;
-            // fgets(buffer, sizeof(buffer), stdin);
-            // player_pick = atoi(buffer);
-            if(!check_card(player, player_pick)) {
-                printf("pick wrong card.\n");
-            }
-            else {
-                isPick = true;
-                pick[0].card = player_pick;
-                pick[0].id = 0;
-                fprintf(log, "%d:%d  ", 0, pick[0].card);
-            }
-        }
-        for(int i = 0; i < player_num-1; ++i) {
-            pick[i+1].card = agent_pickcard(CPU+i, game.table);
-            pick[i+1].id = i+1;
-            fprintf(log, "%d:%d %c", i+1, pick[i+1].card, " \n"[i == player_num-2]);
-        }
-
-        // deal card
-        printf("deal card\n");
-        for(int32_t i = 0; i < player_num; ++i) {
-            if(i == 0) {
-                index = bsearch(&(pick[i].card), player->hand, 10, sizeof(int32_t), agent_cmp);
-                *index = 0;
-                // *index = deal_card(&game);
-                agent_deal(player, player->hand);
-            }
-            else {
-                index = bsearch(&(pick[i].card), CPU[i-1].hand, 10, sizeof(int32_t), agent_cmp);
-                *index = 0;
-                // *index = deal_card(&game);
-                agent_deal(CPU+i-1, CPU[i-1].hand);
-            }
+            fprintf(log, "%d:%d %c", i, pick[i].card, " \n"[i == player_num-1]);
         }
     
         // place card
@@ -166,23 +161,9 @@ int main() {
             NL;
             if(place_card(&game, pick[i].id, pick[i].card)) { // if true, pick one row
                 int32_t row = 0;
-                isPick = false;
-                if(pick[i].card == player_pick) {
-                    printf("Your card is smaller than all row.\n");
-                    while(!isPick) {
-                        printf("Pick one row (1~4): ");
-                        // scanf("%d", &row);
-                        if(input(&row, 0) == 1)
-                            goto end;
-                        if(row < 1 || row > 4) 
-                            printf("Wrong input.\n");
-                        else
-                            isPick = true;
-                    }
-                }
-                else {
-                    row = agent_pickrow(game.table);
-                }
+                row = player[pick[i].id].choose(player+i, game.table, input);
+                if(row == -1)
+                    goto end;
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
             }
             sleep(1);
@@ -216,7 +197,6 @@ end:
     fprintf(log, "---------------------------------------\n");
     fclose(log);
     free(player);
-    free(CPU);
     free(pick);
     return 0;
 }

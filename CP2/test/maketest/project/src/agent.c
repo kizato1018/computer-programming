@@ -10,7 +10,7 @@ void agent_deal(Player *player, const int32_t cards[10]) {
     return;
 }
 
-int32_t agent_pickcard(Player const *player, const int32_t table[4][5]) {
+int32_t agent_pick_normal(Player const *player, const int32_t table[4][5]) {
     srand(time(NULL));
     int32_t pick = 0;
     while(pick == 0) {
@@ -19,7 +19,7 @@ int32_t agent_pickcard(Player const *player, const int32_t table[4][5]) {
     return pick;
 }
 
-int32_t agent_pickrow(const int32_t table[4][5]) {
+int32_t agent_choose_normal(const int32_t table[4][5]) {
     srand(time(NULL));
     return (rand() % 4) + 1;
 }
