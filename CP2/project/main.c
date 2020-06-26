@@ -4,6 +4,7 @@
 #include <time.h>
 #include "game.h"
 #include "agent.h"
+#include "server.h"
 #define NL puts("")
 
 typedef struct _Card{
@@ -13,6 +14,24 @@ typedef struct _Card{
 
 int card_cmp(const void *a, const void *b) {
     return (*(Card *)a).card - (*(Card *)b).card;
+}
+
+int input(int *target, int mode) { 
+    // return 0 is pick, 1 is exit.
+    // mode 0 is stdin, 1 is socket. 
+    CData cdata;
+    char buffer[1024];
+    if(mode == 0) {
+        fgets(buffer, sizeof(buffer), stdin);
+    }
+    else if(mode == 1) {
+        socket_get(&cdata);
+        strcpy(buffer, cdata.input);
+    }
+    if(strcmp(buffer, "exit\n") == 0)
+        return 1;
+    *target = atoi(buffer);
+    return 0;
 }
 
 void show(Game *game, Player *player, int32_t round) {
@@ -48,12 +67,13 @@ int main() {
         printf("log error\n");
         return 1;
     }
-    fprintf(log, "%s", ctime(&now));
     system("clear");
     while(1) {
         printf("Please enter the number of players(2~10): ");
-        fgets(buffer, sizeof(buffer), stdin);
-        player_num = atoi(buffer);
+        // fgets(buffer, sizeof(buffer), stdin);
+        // player_num = atoi(buffer);
+        if(input(&player_num, 0) == 1)
+            goto end;
         if(player_num < 2 || player_num > 10) {
             printf("Wrong players number.\n");
             system("clear");
@@ -63,6 +83,7 @@ int main() {
             break;
         }
     }
+    fprintf(log, "%s", ctime(&now));
     Game_setup(&game, player_num);
     player = calloc(1, sizeof(Player));
     CPU = calloc(player_num-1, sizeof(Player));
@@ -97,11 +118,11 @@ int main() {
         bool isPick = false;
         while(!isPick) {
             printf("pick your card: ");
-            fgets(buffer, sizeof(buffer), stdin);
-            player_pick = atoi(buffer);
+            if(input(&player_pick, 0) == 1)
+                goto end;
+            // fgets(buffer, sizeof(buffer), stdin);
+            // player_pick = atoi(buffer);
             if(!check_card(player, player_pick)) {
-                if(strcmp(buffer, "exit\n") == 0)
-                    goto end;
                 printf("pick wrong card.\n");
             }
             else {
@@ -150,7 +171,9 @@ int main() {
                     printf("Your card is smaller than all row.\n");
                     while(!isPick) {
                         printf("Pick one row (1~4): ");
-                        scanf("%d", &row);
+                        // scanf("%d", &row);
+                        if(input(&row, 0) == 1)
+                            goto end;
                         if(row < 1 || row > 4) 
                             printf("Wrong input.\n");
                         else

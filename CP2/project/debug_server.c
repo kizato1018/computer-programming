@@ -33,7 +33,7 @@ void show(Game *game, Player *player, int32_t round) {
     printf("Round %d\n", round);
     show_score(game);
     NL;
-    show_table(game);
+    show_table(game, stdout);
     NL;
     printf("Your hand cards:\n");
     show_card(player);
@@ -100,9 +100,10 @@ int main() {
         while(!isPick) {
             printf("pick your card: ");
             //scanf("%d", &player_pick);
-            while(socket_get(&data));
+            if(socket_get(&data) == 0)
+                ;
             print_CData(&data);
-            player_pick = data.pick;
+            player_pick = data.input;
             if(!check_card(player, player_pick)) {
                 printf("pick wrong card.\n");
             }
@@ -153,7 +154,7 @@ int main() {
                         //scanf("%d", &row);
                         while(socket_get(&data))
                         print_CData(&data);
-                        row = data.pick;
+                        row = data.input;
                         if(row < 1 || row > 4) 
                             printf("Wrong input.\n");
                         else

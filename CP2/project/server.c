@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include "server.h"
 
-#define HOST_IP "10.0.2.15"
+#define HOST_IP "127.0.0.1"
 #define PORT 8700
 
 CData inputBuffer;
@@ -26,7 +26,7 @@ Response OK_Response() {
 }
 
 void print_CData(const CData *d) {
-    printf("%d %s %d\n", d->id, d->name, d->pick);
+    printf("%d %s %s\n", d->id, d->name, d->input);
 }
 void print_Response(const Response *r) {
     printf("%d %s\n", r->status, r->msg);

@@ -12,7 +12,8 @@ int main() {
      print_Response(&r);
 	
 	while(1) { 
-        scanf("%d", &data.pick);
+        fgets(data.input, sizeof(data.input), stdin);
+        // scanf("%s", &data.input);
         print_CData(&data);
         r = socket_post(&data);
         print_Response(&r);

@@ -13,7 +13,8 @@ typedef struct _Game {
     int32_t table[4][5];    // card on table
     int32_t table_cnt[4];   // count cards in each row
     int32_t *score;         // each player's score
-    int32_t player_num; 
+    int32_t player_num;
+    int32_t difficulty;
 }Game;
 
 int32_t game_cmp(const void *a, const void *b);

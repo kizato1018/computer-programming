@@ -4,7 +4,7 @@
 typedef struct _CData {     // client data
     int id;
     char name[64];
-    int pick;
+    char input[1024];
 }CData;
 
 typedef struct _Response {
