@@ -84,3 +84,7 @@ int socket_connect(const int cnt) {
     }
     return 0;
 }
+
+void socket_close() {
+    close(sockfd);
+}

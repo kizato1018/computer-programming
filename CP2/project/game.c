@@ -61,7 +61,7 @@ void Game_setup(Game *game, int32_t player_num) {
 
     // initillize
     memset(game->card, 0, CARD_NUM * sizeof(bool));
-    game->score = calloc(player_num, sizeof(int32_t));
+    // game->score = calloc(player_num, sizeof(int32_t));
     memset(game->score, 0, player_num * sizeof(int32_t));
     game->player_num = player_num;
     
@@ -101,12 +101,12 @@ bool place_card(Game *game, int32_t id, int32_t pick) {
     return false;
 }
 
-void show_score(Game const *game) {
+void show_score(Game const *game, const int32_t id) {
     for(int32_t i = 0; i < game->player_num; ++i) {
-        if(i == 0)
+        if(i == id)
             printf("Your Score: %d    ", game->score[i]);
         else
-            printf("CPU%d Score: %d    ", i, game->score[i]);
+            printf("Player%d Score: %d    ", i, game->score[i]);
     }
     puts("");
     return;

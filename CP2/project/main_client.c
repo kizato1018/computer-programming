@@ -31,12 +31,12 @@ int32_t input(int32_t *target, const int32_t id, const int8_t mode) {
 void show(Game *game, Player *player, int32_t round) {
     system("clear");
     printf("Round %d\n", round);
-    show_score(game);
+    show_score(game, player->id);
     NL;
     show_table(game, stdout);
     NL;
-    // show_card(player);
-    // NL;
+    show_card(player);
+    NL;
 }
 
 int main() {
@@ -57,11 +57,14 @@ int main() {
     CData data;
     Response r;
 
+    
     // Start
     socket_init();
     client_socket_connect();
     data.id = -1;
-    fgets(data.name, sizeof(data.name), stdin);
+    // printf("Enter your name: ");
+    // fgets(data.name, sizeof(data.name), stdin);
+    // data.name[strlen(data.name)-1] = 0;
 
     r = socket_post(&data);
     print_Response(&r);
@@ -130,10 +133,19 @@ int main() {
     //     }
     // }
     r = socket_post(&data);
-    player_num = atoi(r.msg);
+    memset(data.input, 0, sizeof(data.input));
+    printf("%s\n", r.msg);
+    char *token = strtok(r.msg, " \n");
+    // player.id = atoi(token);
+    // token = strtok(NULL, " \n");
+    player_num = atoi(token);
+    token = strtok(NULL, " \n");
     printf("Player number: %d\n", player_num);
 
     // Game_setup(&game, player_num);
+    game.player_num = player_num;
+    // game.score = calloc(player_num, sizeof(int32_t));
+    memset(game.score, 0, player_num * sizeof(int32_t));
     // player = calloc(player_num, sizeof(Player));
     pick = calloc(player_num, sizeof(Card));
     player.id = data.id;
@@ -142,6 +154,21 @@ int main() {
     player.deal = agent_deal;
     player.pick = player_pick;
     player.choose = player_choose;
+    
+    for(int i = 0; i < 4; ++i) {
+        memset(game.table[i], 0, player_num * sizeof(int32_t));
+        game.table[i][0] = atoi(token);
+        game.table_cnt[i] = 1;
+        // printf("token:%s talbe[%d][0]:%d\n ", token, i, game.table[i][0]);
+        token = strtok(NULL, " \n");
+    }
+    int32_t cards[10];
+    for(int i = 0; i < 10; ++i) {
+        cards[i] = atoi(token);
+        token = strtok(NULL, " \n");
+    }
+    player.deal(&player, cards);
+    // sleep(100);
     // socket_connect(player_num);
     // for(int32_t i = 0; i < player_num; ++i) {
     //     player[i].id = i;
@@ -168,6 +195,7 @@ int main() {
     // }
 
     // Game
+
     printf("Game Start!\n");
     while(!gameover) {
         // variable
@@ -175,11 +203,10 @@ int main() {
 
         // show information
 
-        r = socket_post(&data);
-        printf("%s", r.msg);
+        
+        
 
-        // show(&game, player, round);
-        // show_card(player);
+        show(&game, &player, round);
         // show_card(player+1);
         // NL;
         // fprintf(log, "\n%d\nScore:\n", round);
@@ -190,13 +217,14 @@ int main() {
         // pick card
 
         while(1) {
-            int player_pick = -1;
-            if(input(&player_pick, player.id, 0) == 1)
-                goto end;
-            else if(check_card(&player, player_pick)) {
+            int player_pick_card = -1;
+            player_pick_card = player.pick(&player, game.table, input);
+            if(player_pick_card == -1)
+                gameover = true;
+            else {
                 pick[0].id = player.id;
-                pick[0].card = player_pick;
-                sprintf(data.input, "%d", player_pick);
+                pick[0].card = player_pick_card;
+                sprintf(data.input, "%d", player_pick_card);
                 break;
             }
         }
@@ -216,23 +244,40 @@ int main() {
         // }
 
         // wait for everyone
+        // int row[10] = {0};
+        // int cnt = 0;
         r = socket_post(&data);
+        memset(data.input, 0, sizeof(data.input));
         printf("%s", r.msg);
+        char *token = strtok(r.msg, " \n");
+        for(int i = 0; i < player_num; ++i) {
+            pick[i].id = atoi(token);
+            token = strtok(NULL, " \n");
+            pick[i].card = atoi(token);
+            token = strtok(NULL, " \n");
+        }
+        // int n = atoi(token);
+        // token = strtok(NULL, " \n");
+        // for(int i = 0; i < n; ++i) {
+        //     row[i] = atoi(token);
+        //     token = strtok(NULL, " \n");
+        // }
 
         
         // place card
         qsort(pick, player_num, sizeof(Card), card_cmp);
         for(int32_t i = 0; i < player_num; ++i) {
-            show(&game, player, round);
-            show_card(player);
-            show_card(player+1);
-            NL;
+            show(&game, &player, round);
             show_place_card(pick, i, player_num);
             if(place_card(&game, pick[i].id, pick[i].card)) { // if true, pick one row
-                int32_t row = 0;
-                row = player[pick[i].id].choose(player+i, game.table, input);
-                if(row == -1)
-                    goto end;
+                if(pick[i].id == player.id) {
+                    sprintf(data.input, "%d", player.choose(&player, game.table, input));
+                    r = socket_post(&data);
+                    memset(data.input, 0, sizeof(data.input));
+                }
+                r = socket_post(&data);
+                memset(data.input, 0, sizeof(data.input));
+                int row = atoi(r.msg);
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
             }
             sleep(1);
@@ -247,10 +292,10 @@ int main() {
     // Score
     system("clear");
     for(int32_t i = 1; i < player_num; ++i) {
-        if(game.score[0] > game.score[i])
+        if(game.score[player.id] > game.score[i])
             ++rank;
     }
-    show_score(&game);
+    show_score(&game, player.id);
     NL;
     if(rank == 1)
         printf("You win the 1st place!\n");
@@ -263,9 +308,9 @@ int main() {
 
     // end 
 end:
-    fprintf(log, "---------------------------------------\n");
-    fclose(log);
-    free(player);
+    // fprintf(log, "---------------------------------------\n");
+    // fclose(log);
     free(pick);
+    socket_close();
     return 0;
 }

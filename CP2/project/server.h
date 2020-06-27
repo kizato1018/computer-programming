@@ -17,5 +17,6 @@ void print_CData(const CData *);
 int socket_init();
 int socket_connect(const int);
 int socket_get(CData *, const int, const Response r);
+void socket_close();
 
 #endif

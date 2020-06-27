@@ -72,3 +72,6 @@ Response socket_post(const CData *data) {
     recv(sockfd, &response, sizeof(Response), 0);
     return response;
 }
+void socket_close() {
+    close(sockfd);
+}

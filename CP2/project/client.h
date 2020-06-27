@@ -17,5 +17,6 @@ void print_Response(const Response *);
 int socket_init();
 int client_socket_connect();
 Response socket_post(const CData *);
+void socket_close();
 
 #endif

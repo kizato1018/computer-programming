@@ -32,10 +32,11 @@ int32_t input(int32_t *target, const int32_t id, const int8_t mode) {
     return 0;
 }
 
+
 void show(Game *game, Player *player, int32_t round) {
     system("clear");
     printf("Round %d\n", round);
-    show_score(game);
+    show_score(game, 0);
     NL;
     show_table(game, stdout);
     NL;
@@ -151,6 +152,25 @@ int main() {
         }
 
         player[i].deal(player+i, cards);
+        
+
+        // online
+        if(online) {
+            CData data;
+            Response r = {0, ""};
+            sprintf(r.msg, "%d\n", player_num);
+            for(int j = 0; j < 4; ++j) {
+                char tmp[64];
+                sprintf(tmp, "%d%c", game.table[j][0], " \n"[j == 3]);
+                strcat(r.msg, tmp);
+            }
+            for(int j = 0; j < 10; ++j) {
+                char tmp[64];
+                sprintf(tmp, "%d%c", cards[j], " \n"[j == 9]);
+                strcat(r.msg, tmp);
+            }
+            socket_get(&data, i, r);
+        }
     }
 
     // Game
@@ -169,14 +189,33 @@ int main() {
             fprintf(log, "%d:%d %c", i, game.score[i], " \n"[i == player_num-1]);
         show_table(&game, log);
         // pick card
+        memset(buffer, 0, sizeof(buffer));
         fprintf(log, "pick:\n");
         for(int i = 0; i < player_num; ++i) {
             pick[i].card = player[i].pick(player+i, game.table, input);
             pick[i].id = i;
             if(pick[i].card == -1)
-                goto end;
+                gameover = true;
             fprintf(log, "%d:%d %c", i, pick[i].card, " \n"[i == player_num-1]);
+            if(online) {
+                char tmp[64] = {};
+                sprintf(tmp, "%d %d\n",pick[i].id, pick[i].card);
+                if(i == 0) 
+                    strcpy(buffer, tmp);
+                else 
+                    strcat(buffer, tmp);
+            }
         }
+        if(online) {
+            for(int i = 0; i < player_num; ++i) {
+                CData data;
+                Response r;
+                r.status = 0;
+                strcpy(r.msg, buffer);
+                socket_get(&data, i, r);
+            }
+        }
+        if(gameover) goto end;
     
         // place card
         qsort(pick, player_num, sizeof(Card), card_cmp);
@@ -188,12 +227,20 @@ int main() {
             show_place_card(pick, i, player_num);
             if(place_card(&game, pick[i].id, pick[i].card)) { // if true, pick one row
                 int32_t row = 0;
-                row = player[pick[i].id].choose(player+i, game.table, input);
+                row = player[pick[i].id].choose(player+pick[i].id, game.table, input);
+                if(online) {
+                    CData data;
+                    Response r;
+                    r.status = 0;
+                    sprintf(r.msg, "%d", row);
+                    for(int i = 0; i < player_num; ++i)
+                        socket_get(&data, i, r);
+                }
                 if(row == -1)
-                    goto end;
+                    gameover = true;
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
             }
-            sleep(1);
+            // sleep(1);
         }
         
         // 1 round finish
@@ -208,7 +255,7 @@ int main() {
         if(game.score[0] > game.score[i])
             ++rank;
     }
-    show_score(&game);
+    show_score(&game, 0);
     NL;
     if(rank == 1)
         printf("You win the 1st place!\n");
@@ -225,5 +272,6 @@ end:
     fclose(log);
     free(player);
     free(pick);
+    socket_close();
     return 0;
 }
