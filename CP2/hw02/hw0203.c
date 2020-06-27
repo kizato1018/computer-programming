@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define RED "\033[0;32;31m"
 #define GREEN "\033[0;32;32m"
 #define BLUE "\033[0;32;34m"
 #define PURPLE "\033[0;32;35m"

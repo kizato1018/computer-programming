@@ -8,6 +8,11 @@
 #include <time.h>
 #define CARD_NUM 104
 
+typedef struct _Card{
+    int32_t id;
+    int32_t card;
+}Card;
+
 typedef struct _Game {
     bool card[CARD_NUM];    // Is the card has been picked
     int32_t table[4][5];    // card on table
@@ -25,5 +30,6 @@ void Game_setup(Game *game, int32_t player_num);
 bool place_card(Game *game, int32_t id, int32_t pick);
 void show_score(Game const *game);
 void show_table(Game const *game, FILE*);
+void show_place_card(const Card *pick, const int32_t i, const int32_t num);
 
 #endif

@@ -6,10 +6,10 @@ int main() {
     Response r;
     print_CData(&data);
     socket_init();
-    socket_connect();
+    client_socket_connect();
 
-     r = socket_post(&data);
-     print_Response(&r);
+    r = socket_post(&data);
+    print_Response(&r);
 	
 	while(1) { 
         fgets(data.input, sizeof(data.input), stdin);

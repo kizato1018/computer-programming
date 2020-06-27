@@ -14,14 +14,14 @@
 CData inputBuffer;
 Response response;
 char message[] = {"Hi,this is server.\n"};
-int sockfd = 0, forClientSockfd = 0;
+int sockfd = 0, forClientSockfd[2] = {0};
 
 struct sockaddr_in serverInfo;
-struct sockaddr_storage clientInfo;
-socklen_t addrlen = sizeof(clientInfo);
+struct sockaddr_storage clientInfo[2];
+socklen_t addrlen = sizeof(clientInfo[0]);
 
 Response OK_Response() {
-    Response r = {1, "OK"};
+    Response r = {0, "OK"};
     return r;
 }
 
@@ -42,7 +42,26 @@ int socket_init() {
     return 0;
 }
 
-int socket_connect() {
+int socket_get(CData *data, const int i, const Response r) {
+    
+    while(1) {
+
+        printf("OK\n");
+        // if(!fork()) {
+            recv(forClientSockfd[i], &inputBuffer, sizeof(CData), 0);
+            
+            send(forClientSockfd[i], &r, sizeof(Response), 0);
+            memcpy(data, &inputBuffer, sizeof(CData));
+            // close(forClientSockfd);
+            printf("close\n");
+            return 0;
+        // }
+        // else 
+        //     close(forClientSockfd);
+    }
+}
+
+int socket_connect(const int cnt) {
     //socket的連線
 
     bzero(&serverInfo,sizeof(serverInfo));
@@ -56,26 +75,12 @@ int socket_connect() {
         printf("Error\n");
         return -1;
     }
-    forClientSockfd = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
-    return 0;
-}
-
-int socket_get(CData *data) {
-    
-    while(1) {
-
-        printf("OK\n");
-        // if(!fork()) {
-            recv(forClientSockfd, &inputBuffer, sizeof(CData), 0);
-            
-            response = OK_Response();
-            send(forClientSockfd, &response, sizeof(Response), 0);
-            memcpy(data, &inputBuffer, sizeof(CData));
-            // close(forClientSockfd);
-            printf("close\n");
-            return 0;
-        // }
-        // else 
-        //     close(forClientSockfd);
+    for(int i = 0; i < cnt; ++i) {
+        CData data;
+        Response r = {0, ""};
+        sprintf(r.msg, "%d", i);
+        forClientSockfd[i] = accept(sockfd,(struct sockaddr*) &clientInfo, &addrlen);
+        socket_get(&data, i, r);
     }
+    return 0;
 }

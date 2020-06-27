@@ -76,7 +76,7 @@ int main() {
         if(input(&(game.difficulty), 0) == 1)
             goto end;
         if(game.difficulty == 1) {
-            Fpick = agent_pick_easy;
+            Fpick = agent_pick_mother;
             Fchoose = agent_choose_easy;
             break;
         }

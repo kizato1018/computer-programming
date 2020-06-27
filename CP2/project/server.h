@@ -12,9 +12,10 @@ typedef struct _Response {
     char msg[1024];
 }Response;
 
+Response OK_Response();
 void print_CData(const CData *);
 int socket_init();
-int socket_connect();
-int socket_get(CData *);
+int socket_connect(const int);
+int socket_get(CData *, const int, const Response r);
 
 #endif

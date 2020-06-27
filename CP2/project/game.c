@@ -1,6 +1,12 @@
 #include "game.h"
 #include <stdio.h>
 #include <unistd.h>
+#define RED "\033[0;41m"
+#define GREEN "\033[0;42;30m"
+#define YELLOW "\033[0;43;30m"
+#define BLUE "\033[0;44m"
+#define RESET "\033[m"
+#define color_print(out, color, fmt, ...) fprintf(out, color fmt RESET, __VA_ARGS__)
 
 int32_t game_cmp(const void *a, const void *b) {
     return *(int32_t *)a - *(int32_t *)b;
@@ -110,8 +116,67 @@ void show_table(Game const *game, FILE *out) {
     fprintf(out, "Table:\n");
     for(int32_t i = 0; i < 4; i++) {
         for(int32_t j = 0; j < game->table_cnt[i]; ++j) {
-            fprintf(out, "%4d", game->table[i][j]);
+            if(out == stdout) {
+                switch (get_point(game->table[i][j])) {
+                case 2:
+                    color_print(out, BLUE, "%3d", game->table[i][j]);
+                    fprintf(out, " ");
+                    break;
+                case 3:
+                    color_print(out, GREEN, "%3d", game->table[i][j]);
+                    fprintf(out, " ");
+                    break;
+                case 5:
+                    color_print(out, RED, "%3d", game->table[i][j]);
+                    fprintf(out, " ");
+                    break;
+                case 7:
+                    color_print(out, YELLOW, "%3d", game->table[i][j]);
+                    fprintf(out, " ");
+                    break;
+                
+                default:
+                    fprintf(out, "%3d", game->table[i][j]);
+                    fprintf(out, " ");
+                    break;
+                }
+            }
+            else {
+                fprintf(out, "%3d", game->table[i][j]);
+                fprintf(out, " ");
+            }
+
         }
         fputs("\n", out);
     }
+}
+
+void show_place_card(const Card *pick, const int32_t i, const int32_t num) {
+    printf("Placing cards: ");
+    for(int32_t j = i; j < num; ++j) {
+        switch (get_point(pick[j].card)) {
+        case 2:
+            color_print(stdout, BLUE, "%3d", pick[j].card);
+            fprintf(stdout, " ");
+            break;
+        case 3:
+            color_print(stdout, GREEN, "%3d", pick[j].card);
+            fprintf(stdout, " ");
+            break;
+        case 5:
+            color_print(stdout, RED, "%3d", pick[j].card);
+            fprintf(stdout, " ");
+            break;
+        case 7:
+            color_print(stdout, YELLOW, "%3d", pick[j].card);
+            fprintf(stdout, " ");
+            break;
+        
+        default:
+            fprintf(stdout, "%3d", pick[j].card);
+            fprintf(stdout, " ");
+            break;
+        }
+    }
+    puts("");
 }

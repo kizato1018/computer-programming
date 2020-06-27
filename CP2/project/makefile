@@ -10,7 +10,8 @@ all:
 debug: game.o agent.o
 	gcc -c server.c -o server.o
 	gcc -c client.c -o client.o
-	gcc debug_server.c game.o agent.o server.o -o debug_server
+	gcc -c main.c -o main.o
+	gcc main.o game.o agent.o server.o -o debug_server
 	gcc debug_client.c game.o agent.o client.o -o debug_client
 contest: contest.c agent.c
 	gcc -c

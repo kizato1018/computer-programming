@@ -52,14 +52,17 @@ int main() {
     int32_t player_pick = 0;
     int32_t round = 1;
     int32_t rank = 1;
-    CData data;
+    CData data[2];
+
 
     // Start
     socket_init();
     socket_connect();    
 //    while(1) {
 
-    socket_get(&data);
+    socket_get(&data, 0);
+    print_CData(&data);
+    socket_get(&data, 0);
     print_CData(&data);
 //    }
     while(1) {

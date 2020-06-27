@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "server.h"
+#include "client.h"
 
 #define HOST_IP "127.0.0.1"
 #define PORT 8700
@@ -39,7 +39,7 @@ int socket_init() {
     return 0;
 }
 
-int socket_connect() {
+int client_socket_connect() {
     //socket的連線
 
     bzero(&info,sizeof(info));
