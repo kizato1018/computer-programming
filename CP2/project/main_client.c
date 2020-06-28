@@ -22,8 +22,11 @@ int32_t input(int32_t *target, const int32_t id, const int8_t mode) {
             return 1;
         }
     }
-    if(strcmp(buffer, "exit\n") == 0)
-        return 1;
+    if(strcmp(buffer, "exit\n") == 0) {
+        printf("online mode can't exit\n");
+        *target = -1;
+        return 0;
+    }
     *target = atoi(buffer);
     return 0;
 }
@@ -41,7 +44,7 @@ void show(Game *game, Player *player, int32_t round) {
 
 int main() {
     // declare
-    FILE *log = NULL;
+    // FILE *log = NULL;
     int32_t player_num = 0;
     bool gameover = false;
     Game game;

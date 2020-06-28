@@ -145,7 +145,7 @@ void show_card(Player const *player) {
     color_print(RED, "%c", ' ');
     printf(":5 ");
     color_print(YELLOW, "%c", ' ');
-    printf(":7\n");
+    printf(":7\n\n");
 
     printf("Your hand cards:\n");
     for(int32_t i = 0; i < 10; ++i) {
@@ -153,23 +153,23 @@ void show_card(Player const *player) {
             switch (agent_get_point(player->hand[i])) {
             case 2:
                 color_print(BLUE, "%d", player->hand[i]);
-                printf("%c", " \n"[i==9]);
+                printf("%c", " \n"[i==player->card_cnt-1]);
                 break;
             case 3:
                 color_print(GREEN, "%d", player->hand[i]);
-                printf("%c", " \n"[i==9]);
+                printf("%c", " \n"[i==player->card_cnt-1]);
                 break;
             case 5:
                 color_print(RED, "%d", player->hand[i]);
-                printf("%c", " \n"[i==9]);
+                printf("%c", " \n"[i==player->card_cnt-1]);
                 break;
             case 7:
                 color_print(YELLOW, "%d", player->hand[i]);
-                printf("%c", " \n"[i==9]);
+                printf("%c", " \n"[i==player->card_cnt-1]);
                 break;
             
             default:
-                printf("%d%c", player->hand[i], " \n"[i==9]);
+                printf("%d%c", player->hand[i], " \n"[i==player->card_cnt-1]);
                 break;
             }
         }

@@ -36,7 +36,7 @@ int socket_init() {
      //socket的建立
     sockfd = socket(AF_INET , SOCK_STREAM , 0);
     if (sockfd == -1){
-        printf("Fail to create a socket.");
+        printf("Fail to create a socket.\n");
         return -1;
     }
     return 0;

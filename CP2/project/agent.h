@@ -34,8 +34,4 @@ int32_t agent_choose_father(Player *player, const int32_t table[4][5], int32_t (
 void show_card(Player const *player);
 bool check_card(Player *player, const int32_t pick);
 
-void CSIE_40847025S_setup(void);
-void CSIE_40847025S_deal(void);
-void CSIE_40847025S_choose(void);
-
 #endif
