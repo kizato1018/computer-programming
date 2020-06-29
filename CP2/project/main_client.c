@@ -294,7 +294,7 @@ int main() {
 
     // Score
     system("clear");
-    for(int32_t i = 1; i < player_num; ++i) {
+    for(int32_t i = 0; i < player_num; ++i) {
         if(game.score[player.id] > game.score[i])
             ++rank;
     }
