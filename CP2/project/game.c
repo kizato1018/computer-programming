@@ -61,7 +61,6 @@ void Game_setup(Game *game, int32_t player_num) {
 
     // initillize
     memset(game->card, 0, CARD_NUM * sizeof(bool));
-    // game->score = calloc(player_num, sizeof(int32_t));
     memset(game->score, 0, player_num * sizeof(int32_t));
     game->player_num = player_num;
     

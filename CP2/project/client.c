@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include "client.h"
 
-#define HOST_IP "114.34.59.80"
+#define HOST_IP "127.0.0.1"
 #define PORT 8700
 
 //char inputBuffer[256] = {};

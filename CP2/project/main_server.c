@@ -46,7 +46,6 @@ void show(Game *game, Player *player, int32_t round) {
 
 int main() {
     // declare
-    // FILE *log = NULL;
     int32_t player_num = 0;
     bool gameover = false;
     Game game;
@@ -60,64 +59,14 @@ int main() {
     int32_t (*Fpick)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, const int32_t id, const int8_t mode));
     int32_t (*Fchoose)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, const int32_t id, const int8_t mode));
     CData data[2];
-    // char host_ip[64] = {};
 
     // Start
     if(online) {
         socket_init();
     }
 
-    // Start
-    // time(&now);
-    // if((log = fopen("log.dat", "a")) == NULL) {
-    //     printf("log error\n");
-    //     return 1;
-    // }
-    // fprintf(log, "%s", ctime(&now));
     system("clear");
-    // while(1) {
-    //     int32_t choose = 0;
-    //     printf("1) Single player\n");
-    //     printf("2) Online mode\n");
-    //     input(&choose, 0, 0);
-    //     if(choose == 1) {
-    //         online = false;
-    //         break;
-    //     }
-    //     else if(choose == 2) {
-    //         online = true;
-    //         // printf("Host IP: ");
-    //         break;
-    //     }
-    //     else 
-    //         printf("wrong mode\n");
-    // }
-    // while(!online) {
-    //     printf("Please enter the difficulty(1 mother, 2 father, 3 grandma): ");
-    //     if(input(&(game.difficulty), 0, online) == 1)
-    //         goto end;
-    //     if(game.difficulty == 1) {
-    //         Fpick = agent_pick_mother;
-    //         Fchoose = agent_choose_mother;
-    //         fprintf(log, "difficulty: 1\n");
-    //         break;
-    //     }
-    //     else if(game.difficulty == 2) {
-    //         Fpick = agent_pick_father;
-    //         Fchoose = agent_choose_father;
-    //         fprintf(log, "difficulty: 2\n");
-    //         break;
-    //     }
-    //     else if(game.difficulty == 3) {
-    //         Fpick = agent_pick_grandma;
-    //         Fchoose = agent_choose_grandma;
-    //         fprintf(log, "difficulty: 3\n");
-    //         break;
-    //     }
-    //     else
-    //         printf("wrong difficulty\n");
-    // }
-    
+
     while(1) {
         printf("Please enter the number of players(2~10): ");
         if(input(&player_num, 0, 0) == 1)
@@ -126,7 +75,6 @@ int main() {
             printf("Wrong players number.\n");
         }
         else {
-            // fprintf(log, "player:%d\n", player_num);
             break;
         }
     }
@@ -151,10 +99,8 @@ int main() {
         }
         
         int32_t cards[10];
-        // fprintf(log, "%d:", i);
         for(int32_t j = 0; j < 10; ++j) {
             cards[j] = deal_card(&game);
-            // fprintf(log, "%3d%c", cards[j], " \n"[j == 9]);
         }
 
         player[i].deal(player+i, cards);
@@ -187,19 +133,12 @@ int main() {
 
         // show information
         show(&game, player, round);
-        // fprintf(log, "\n%d\nScore:\n", round);
-        for(int32_t i = 0; i < player_num; ++i)
-            // fprintf(log, "%d:%d %c", i, game.score[i], " \n"[i == player_num-1]);
-        // show_table(&game, log);
-        // pick card
         memset(buffer, 0, sizeof(buffer));
-        // fprintf(log, "pick:\n");
         for(int i = 0; i < player_num; ++i) {
             pick[i].card = player[i].pick(player+i, game.table, input);
             pick[i].id = i;
             if(pick[i].card == -1)
                 gameover = true;
-            // fprintf(log, "%d:%d %c", i, pick[i].card, " \n"[i == player_num-1]);
             if(online) {
                 char tmp[64] = {};
                 sprintf(tmp, "%d %d\n",pick[i].id, pick[i].card);
@@ -268,8 +207,6 @@ int main() {
 
     // end 
 end:
-    // fprintf(log, "---------------------------------------\n");
-    // fclose(log);
     free(player);
     free(pick);
     socket_close();

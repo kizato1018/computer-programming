@@ -59,13 +59,7 @@ int main() {
     bool online = false;
     int32_t (*Fpick)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, const int32_t id, const int8_t mode));
     int32_t (*Fchoose)(Player *player, const int32_t table[4][5], int32_t (*input)(int32_t *target, const int32_t id, const int8_t mode));
-    CData data[2];
-    // char host_ip[64] = {};
 
-    // Start
-    if(online) {
-        socket_init();
-    }
 
     // Start
     time(&now);
@@ -75,24 +69,8 @@ int main() {
     }
     fprintf(log, "%s", ctime(&now));
     system("clear");
-    // while(1) {
-    //     int32_t choose = 0;
-    //     printf("1) Single player\n");
-    //     printf("2) Online mode\n");
-    //     input(&choose, 0, 0);
-    //     if(choose == 1) {
-    //         online = false;
-    //         break;
-    //     }
-    //     else if(choose == 2) {
-    //         online = true;
-    //         // printf("Host IP: ");
-    //         break;
-    //     }
-    //     else 
-    //         printf("wrong mode\n");
-    // }
-    while(!online) {
+
+    while(1) {
         printf("Please enter the difficulty(1 mother, 2 father, 3 grandma): ");
         if(input(&(game.difficulty), 0, online) == 1)
             goto end;
@@ -117,6 +95,7 @@ int main() {
         else
             printf("wrong difficulty\n");
     }
+
     
     while(1) {
         printf("Please enter the number of players(2~10): ");
@@ -133,9 +112,7 @@ int main() {
     Game_setup(&game, player_num);
     player = calloc(player_num, sizeof(Player));
     pick = calloc(player_num, sizeof(Card));
-    if(online) {
-        socket_connect(player_num);
-    }
+
     for(int32_t i = 0; i < player_num; ++i) {
         player[i].id = i;
         player[i].online = online;
@@ -158,25 +135,6 @@ int main() {
         }
 
         player[i].deal(player+i, cards);
-        
-
-        // online
-        if(online) {
-            CData data;
-            Response r = {0, ""};
-            sprintf(r.msg, "%d\n", player_num);
-            for(int j = 0; j < 4; ++j) {
-                char tmp[64];
-                sprintf(tmp, "%d%c", game.table[j][0], " \n"[j == 3]);
-                strcat(r.msg, tmp);
-            }
-            for(int j = 0; j < 10; ++j) {
-                char tmp[64];
-                sprintf(tmp, "%d%c", cards[j], " \n"[j == 9]);
-                strcat(r.msg, tmp);
-            }
-            socket_get(&data, i, r);
-        }
     }
 
     // Game
@@ -200,25 +158,9 @@ int main() {
             if(pick[i].card == -1)
                 gameover = true;
             fprintf(log, "%d:%d %c", i, pick[i].card, " \n"[i == player_num-1]);
-            if(online) {
-                char tmp[64] = {};
-                sprintf(tmp, "%d %d\n",pick[i].id, pick[i].card);
-                if(i == 0) 
-                    strcpy(buffer, tmp);
-                else 
-                    strcat(buffer, tmp);
-            }
         }
-        if(online) {
-            for(int i = 0; i < player_num; ++i) {
-                CData data;
-                Response r;
-                r.status = 0;
-                strcpy(r.msg, buffer);
-                socket_get(&data, i, r);
-            }
-        }
-        if(gameover) goto end;
+        if(gameover)
+            goto end;
     
         // place card
         qsort(pick, player_num, sizeof(Card), card_cmp);
@@ -228,14 +170,6 @@ int main() {
             if(place_card(&game, pick[i].id, pick[i].card)) { // if true, pick one row
                 int32_t row = 0;
                 row = player[pick[i].id].choose(player+pick[i].id, game.table, input);
-                if(online) {
-                    CData data;
-                    Response r;
-                    r.status = 0;
-                    sprintf(r.msg, "%d", row);
-                    for(int i = 0; i < player_num; ++i)
-                        socket_get(&data, i, r);
-                }
                 if(row == -1)
                     gameover = true;
                 game.score[pick[i].id] += new_row(&game, row-1, pick[i].card);
@@ -251,7 +185,7 @@ int main() {
 
     // Score
     system("clear");
-    for(int32_t i = 1; i < player_num; ++i) {
+    for(int32_t i = 0; i < player_num; ++i) {
         if(game.score[0] > game.score[i])
             ++rank;
     }
@@ -272,6 +206,5 @@ end:
     fclose(log);
     free(player);
     free(pick);
-    socket_close();
     return 0;
 }

@@ -44,7 +44,6 @@ void show(Game *game, Player *player, int32_t round) {
 
 int main() {
     // declare
-    // FILE *log = NULL;
     int32_t player_num = 0;
     bool gameover = false;
     Game game;
@@ -65,91 +64,22 @@ int main() {
     socket_init();
     client_socket_connect();
     data.id = -1;
-    // printf("Enter your name: ");
-    // fgets(data.name, sizeof(data.name), stdin);
-    // data.name[strlen(data.name)-1] = 0;
 
     r = socket_post(&data);
     print_Response(&r);
     data.id = atoi(r.msg);
     // // Start
-    // time(&now);
-    // if((log = fopen("log.dat", "a")) == NULL) {
-    //     printf("log error\n");
-    //     return 1;
-    // }
-    // fprintf(log, "%s", ctime(&now));
-    // system("clear");
-    // while(1) {
-    //     int32_t choose = 0;
-    //     printf("1) Single player\n");
-    //     printf("2) Online mode\n");
-    //     input(&choose, 0, 0);
-    //     if(choose == 1) {
-    //         online = false;
-    //         break;
-    //     }
-    //     else if(choose == 2) {
-    //         online = true;
-    //         break;
-    //     }
-    //     else 
-    //         printf("wrong mode\n");
-    // }
-    // while(!online) {
-    //     printf("Please enter the difficulty(1 mother, 2 father, 3 grandma): ");
-    //     if(input(&(game.difficulty), 0, online) == 1)
-    //         goto end;
-    //     if(game.difficulty == 1) {
-    //         Fpick = agent_pick_mother;
-    //         Fchoose = agent_choose_mother;
-    //         fprintf(log, "difficulty: 1\n");
-    //         break;
-    //     }
-    //     else if(game.difficulty == 2) {
-    //         Fpick = agent_pick_father;
-    //         Fchoose = agent_choose_father;
-    //         fprintf(log, "difficulty: 2\n");
-    //         break;
-    //     }
-    //     else if(game.difficulty == 3) {
-    //         Fpick = agent_pick_grandma;
-    //         Fchoose = agent_choose_grandma;
-    //         fprintf(log, "difficulty: 3\n");
-    //         break;
-    //     }
-    //     else
-    //         printf("wrong difficulty\n");
-    // }
-    
 
-    // while(1) {
-    //     printf("Please enter the number of players(2~10): ");
-    //     if(input(&player_num, 0, 0) == 1)
-    //         goto end;
-    //     if(player_num < 2 || player_num > 10) {
-    //         printf("Wrong players number.\n");
-    //     }
-    //     else {
-    //         fprintf(log, "player:%d\n", player_num);
-    //         break;
-    //     }
-    // }
     r = socket_post(&data);
     memset(data.input, 0, sizeof(data.input));
     printf("%s\n", r.msg);
     char *token = strtok(r.msg, " \n");
-    // player.id = atoi(token);
-    // token = strtok(NULL, " \n");
     player_num = atoi(token);
     token = strtok(NULL, " \n");
     printf("Player number: %d\n", player_num);
 
-    // Game_setup(&game, player_num);
     game.player_num = player_num;
-    // game.score = calloc(player_num, sizeof(int32_t));
     memset(game.score, 0, player_num * sizeof(int32_t));
-    // player = calloc(player_num, sizeof(Player));
     pick = calloc(player_num, sizeof(Card));
     player.id = data.id;
     player.online = false;
@@ -162,7 +92,6 @@ int main() {
         memset(game.table[i], 0, player_num * sizeof(int32_t));
         game.table[i][0] = atoi(token);
         game.table_cnt[i] = 1;
-        // printf("token:%s talbe[%d][0]:%d\n ", token, i, game.table[i][0]);
         token = strtok(NULL, " \n");
     }
     int32_t cards[10];
@@ -171,53 +100,13 @@ int main() {
         token = strtok(NULL, " \n");
     }
     player.deal(&player, cards);
-    // sleep(100);
-    // socket_connect(player_num);
-    // for(int32_t i = 0; i < player_num; ++i) {
-    //     player[i].id = i;
-    //     player[i].online = online;
-    //     player[i].setup = agent_setup;
-    //     player[i].deal = agent_deal;
-    //     if(online || i == 0) {
-    //         player[i].pick = player_pick;
-    //         player[i].choose = player_choose;
-    //     }
-    //     else {
-    //         player[i].pick = Fpick;
-    //         player[i].choose = Fchoose;
-    //     }
-        
-    //     int32_t cards[10];
-    //     fprintf(log, "%d:", i);
-    //     for(int32_t j = 0; j < 10; ++j) {
-    //         cards[j] = deal_card(&game);
-    //         fprintf(log, "%3d%c", cards[j], " \n"[j == 9]);
-    //     }
-
-    //     player[i].deal(player+i, cards);
-    // }
 
     // Game
 
     printf("Game Start!\n");
     while(!gameover) {
-        // variable
-        // int32_t *index = NULL;
-
         // show information
-
-        
-        
-
         show(&game, &player, round);
-        // show_card(player+1);
-        // NL;
-        // fprintf(log, "\n%d\nScore:\n", round);
-        // for(int32_t i = 0; i < player_num; ++i)
-        //     fprintf(log, "%d:%d %c", i, game.score[i], " \n"[i == player_num-1]);
-        // show_table(&game, log);
-
-        // pick card
 
         while(1) {
             int player_pick_card = -1;
@@ -231,24 +120,12 @@ int main() {
                 break;
             }
         }
+        
         // post pick card
         r = socket_post(&data);
         printf("%s", r.msg);
         memset(data.input, 0, sizeof(data.input));
         
-
-        // fprintf(log, "pick:\n");
-        // for(int i = 0; i < player_num; ++i) {
-        //     pick[i].card = player[i].pick(player+i, game.table, input);
-        //     pick[i].id = i;
-        //     if(pick[i].card == -1)
-        //         goto end;
-        //     fprintf(log, "%d:%d %c", i, pick[i].card, " \n"[i == player_num-1]);
-        // }
-
-        // wait for everyone
-        // int row[10] = {0};
-        // int cnt = 0;
         r = socket_post(&data);
         memset(data.input, 0, sizeof(data.input));
         printf("%s", r.msg);
@@ -259,13 +136,6 @@ int main() {
             pick[i].card = atoi(token);
             token = strtok(NULL, " \n");
         }
-        // int n = atoi(token);
-        // token = strtok(NULL, " \n");
-        // for(int i = 0; i < n; ++i) {
-        //     row[i] = atoi(token);
-        //     token = strtok(NULL, " \n");
-        // }
-
         
         // place card
         qsort(pick, player_num, sizeof(Card), card_cmp);
@@ -311,8 +181,6 @@ int main() {
 
     // end 
 end:
-    // fprintf(log, "---------------------------------------\n");
-    // fclose(log);
     free(pick);
     socket_close();
     return 0;

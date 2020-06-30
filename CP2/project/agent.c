@@ -58,7 +58,6 @@ int32_t player_choose(Player *player, const int32_t table[4][5], int32_t (*input
     printf("Your card is smaller than all row.\n");
     while(!isPick) {
         printf("Pick one row (1~4): ");
-        // scanf("%d", &row);
         if(input(&row, player->id, player->online) == 1)
             return -1;
         if(row < 1 || row > 4) 
