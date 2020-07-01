@@ -12,7 +12,7 @@ public:
     MapUnit(int , std::string );
     virtual Condition Travel(int); // 回傳動作。
     void Leave(int);
-    virtual void Map_Show(int, int);
+    virtual void Map_Show(int, int) const;
     virtual void Release();
     virtual int Get_Host() const { return -1; }
     virtual int Get_Fine() const { return 0; }
@@ -27,7 +27,7 @@ class UpgradableUnit : public MapUnit {
 public:
 	UpgradableUnit(int ,std::string ,int ,int ,int[] );
     virtual Condition Travel(int );
-    virtual void Map_Show(int ,int);
+    virtual void Map_Show(int ,int) const;
     virtual void Release();
     void Upgrade();
     int Buy_price() const { return price_; }
@@ -49,7 +49,7 @@ class CollectableUnit : public MapUnit {
 public:
     CollectableUnit(int ,std::string ,int ,int );
 	virtual Condition Travel(int );
-    virtual void Map_Show(int ,int);
+    virtual void Map_Show(int ,int) const;
     virtual void Release();
     int Buy_price() const { return price_; }
     virtual int Get_Host() const { return host_; }
@@ -64,7 +64,7 @@ class RandomCostUnit : public MapUnit {
 public:
     RandomCostUnit(int ,std::string ,int ,int );
 	virtual Condition Travel(int );
-	virtual void Map_Show(int ,int);
+	virtual void Map_Show(int ,int) const;
     virtual void Release();
     int Buy_price() const { return price_; }
     virtual int Get_Host() const { return host_; }
@@ -80,6 +80,6 @@ class JailUnit : public MapUnit {
 public:
     JailUnit(int ,std::string );
     virtual Condition Travel(int );
-    virtual void Map_Show(int, int);
+    virtual void Map_Show(int, int) const;
 };
 #endif

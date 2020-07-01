@@ -25,12 +25,11 @@ bool WorldPlayer::Add_Player( Player *newPlayer ){
 bool WorldMap::Get_Map( std::ifstream &fin ){
     const int max_length = 200;
     int id = 0;
-    
+
     while( !fin.eof() ) {
-    // for(int i = 0; i < ;  ++i)
         std::string line;
         getline(fin, line);
-
+        if(line.size() < 2) continue;
         if(line[0] == 'U') {
             std::stringstream ss;
             char type = 0;
@@ -51,7 +50,7 @@ bool WorldMap::Get_Map( std::ifstream &fin ){
             std::string name;
             int price = 0;
             int fine = 0;
-            
+
             ss << line;
             ss >> type >> name >> price >> fine;
             MapUnit* new_unit = new CollectableUnit( id, name, price, fine );
@@ -63,7 +62,7 @@ bool WorldMap::Get_Map( std::ifstream &fin ){
             std::string name;
             int price = 0;
             int fine = 0;
-            
+
             ss << line;
             ss >> type >> name >> price >> fine;
             MapUnit* new_unit = new RandomCostUnit( id, name, price, fine );
@@ -79,10 +78,8 @@ bool WorldMap::Get_Map( std::ifstream &fin ){
             units_.push_back( new_unit );
         }
         else {
-            std::cout << "no this type map unit!!" << std::endl;
+            continue;
         }
-        // units_[id]->Map_Show(0);
-        // std::cout << '\n';
 
         id+=1;
     }
@@ -104,7 +101,6 @@ void Game::Init( std::ifstream &fin )
     game_over_ = false;
 
     world_map_.Get_Map( fin );
-    std::cout << "number_unit: " << world_map_.Get_Number_Unit() << std::endl;
 
     int number_player = 0;
     std::cout << "How many players?(Maximum:4)...>";
@@ -117,11 +113,9 @@ void Game::Init( std::ifstream &fin )
     }
     world_player_.Set_Number_Player( number_player );
     world_player_.Set_Total_Number( number_player );
-    std::cout << "number_player: " << world_player_.Get_Number_Player() << std::endl;
-    // getchar();
 
     std::string name;
-    std::string default_name[4]; // TODO: default name
+    std::string default_name[4];
     default_name[0] = "aaa";
     default_name[1] = "bbb";
     default_name[2] = "ccc";
@@ -133,13 +127,12 @@ void Game::Init( std::ifstream &fin )
             name = default_name[i];
         }
         if( !New_Player( i, name ) ) {
-            std::cout << "new_player error!!" << std::endl;
             i-=1;
         }
     }
 
 
-    
+
     return;
 }
 
@@ -159,7 +152,7 @@ Condition Game::Move( const int id )
         return BANKRUPT;
     if( !(cur_player.Is_Movable()) )
         return JAIL;
-    
+
     std::cout << cur_player.Get_Player_Name() << ", your action? (1:Dice [default] / 2:Exit)...>";
     int option = Input();
 
@@ -168,9 +161,8 @@ Condition Game::Move( const int id )
         Game_Over();
         return NOTHING;
     }
-        
+
     int dice = cur_player.Roll_Dice();
-    // maybe like this TODO: check func
     int location = cur_player.Get_Location();
     std::cout << "location: " << location << std::endl;
     world_map_.Get_Unit(location).Leave(cur_player.Get_Id());
@@ -253,41 +245,27 @@ void Game::Travel( const int id, Condition event )
 
 void Game::Show_Event( const Condition event, const Player &cur_player, const MapUnit &cur_unit )
 {
-    // Player &cur_player = world_player_.Get_Player( id );
-    // MapUnit &cur_unit = world_map_.Get_Unit( location );
-
-    
     if( event == BUYABLE_U || event ==  BUYABLE_R || event ==  BUYABLE_C )
     {
         std::cout << cur_player.Get_Player_Name() << ", do you want to buy " << cur_unit.Get_Unit_Name() << "? (1: Yes [default] / 2: No) ...>";
     }
-    
-    // else if( event == PAYMENT )
-    // {
-    //     Player &creditor = world_player_.Get_Player( cur_unit.Get_Host() );
-    //     std::cout << cur_player.Get_Player_Name() << ", you must pay $" << cur_unit.Get_Fine() << " to Player " << cur_unit.Get_Host() << " (" << creditor.Get_Player_Name() << ")" << std::endl;
-    // }
 
     else if( event == UPGRADABLE )
     {
         std::cout << cur_player.Get_Player_Name() << ", do you want to upgrade " << cur_unit.Get_Unit_Name() << "? (1: Yes [default] / 2: No) ...>";
     }
-    // if( event == JAIL)
-    // {
-    //     std::cout << cur_player.Get_Player_Name() << ", you must go to jail in " << cur_unit.Get_Unit_Name() << " and stay a round." << std::endl;
-    // }
-    
+
     return;
 }
 
 void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cur_unit )
 {
-    
+
     if( event == BUYABLE_U ) {
         int option = Input();
         if( option != 2 ) {
             UpgradableUnit *upgradalbe_unit = dynamic_cast<UpgradableUnit *>(&cur_unit);
-            if( cur_player.Do_Act( BUY, upgradalbe_unit->Buy_price() ) ) // TODO: player event
+            if( cur_player.Do_Act( BUY, upgradalbe_unit->Buy_price() ) )
                 upgradalbe_unit->Host( cur_player.Get_Id() );
             std::cout << "You pay $" << upgradalbe_unit->Buy_price() << " to buy " << upgradalbe_unit->Get_Unit_Name() << std::endl;
             std::cout << "Press any key to continue." << std::endl;
@@ -299,7 +277,7 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
         int option = Input();
         if( option != 2 ) {
             CollectableUnit *collectable_unit = dynamic_cast<CollectableUnit *>(&cur_unit);
-            if( cur_player.Do_Act( BUY_C, collectable_unit->Buy_price() ) ) // TODO: player event
+            if( cur_player.Do_Act( BUY_C, collectable_unit->Buy_price() ) )
                 collectable_unit->Host( cur_player.Get_Id() );
             std::cout << "You pay $" << collectable_unit->Buy_price() << " to buy " << collectable_unit->Get_Unit_Name() << std::endl;
             std::cout << "Press any key to continue." << std::endl;
@@ -311,18 +289,18 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
         int option = Input();
         if( option != 2 ) {
             RandomCostUnit *random_unit = dynamic_cast<RandomCostUnit *> (&cur_unit);
-            if( cur_player.Do_Act( BUY, random_unit->Buy_price() ) ) // TODO: player event
+            if( cur_player.Do_Act( BUY, random_unit->Buy_price() ) )
                 random_unit->Host( cur_player.Get_Id() );
             std::cout << "You pay $" << random_unit->Buy_price() << " to buy " << random_unit->Get_Unit_Name() << std::endl;
             std::cout << "Press any key to continue." << std::endl;
             getchar();
         }
     }
-    
+
     else if( event == PAYMENT_U )
     {
         Player &creditor = world_player_.Get_Player( cur_unit.Get_Host() );
-        if( cur_player.Do_Act( PAY, cur_unit.Get_Fine() ) ) // TODO: player event
+        if( cur_player.Do_Act( PAY, cur_unit.Get_Fine() ) )
         {
             creditor.Do_Act( GAIN, cur_unit.Get_Fine() );
             std::cout << cur_player.Get_Player_Name() << ", you must pay $" << cur_unit.Get_Fine() << " to Player " <<  creditor.Get_Id() << " (" << creditor.Get_Player_Name() << ")" << std::endl;
@@ -343,7 +321,7 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
         Player &creditor = world_player_.Get_Player( cur_unit.Get_Host() );
         int fine = 0;
         fine = cur_unit.Get_Fine() * creditor.Get_Collection_Cnt();
-        if( cur_player.Do_Act( PAY, fine) ) // TODO: player event
+        if( cur_player.Do_Act( PAY, fine) )
         {
             creditor.Do_Act( GAIN, fine );
             std::cout << cur_player.Get_Player_Name() << ", you must pay $" << fine << " to Player " <<  creditor.Get_Id() << " (" << creditor.Get_Player_Name() << ")" << std::endl;
@@ -364,7 +342,7 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
         Player &creditor = world_player_.Get_Player( cur_unit.Get_Host() );
         int fine = 0;
         fine = cur_unit.Get_Fine() * cur_player.Roll_Dice();
-        if( cur_player.Do_Act( PAY, fine ) ) // TODO: player event
+        if( cur_player.Do_Act( PAY, fine ) )
         {
             creditor.Do_Act( GAIN, fine );
             std::cout << cur_player.Get_Player_Name() << ", you must pay $" << fine << " to Player " <<  creditor.Get_Id() << " (" << creditor.Get_Player_Name() << ")" << std::endl;
@@ -389,7 +367,7 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
             if( upgradable_unit->Get_Level() == 5) {
                 std::cout << "This is the maximum level" << std::endl;
             }
-            else if( cur_player.Do_Act( UPGRADE, upgradable_unit->Upgrade_price() ) ) { // TODO: player event
+            else if( cur_player.Do_Act( UPGRADE, upgradable_unit->Upgrade_price() ) ) {
                 upgradable_unit->Upgrade();
                 std::cout << "You pay $" << upgradable_unit->Upgrade_price() << " to upgrade USA to Lv." << upgradable_unit->Get_Level() << std::endl;
             }
@@ -400,7 +378,7 @@ void Game::Execute_Event( const Condition event, Player &cur_player, MapUnit &cu
 
     else if( event == JAIL )
     {
-        cur_player.Do_Act( TOJAIL ); // TODO: player event
+        cur_player.Do_Act( TOJAIL );
         std::cout << "You are in jail " << cur_unit.Get_Unit_Name() << std::endl;
         std::cout << "Press any key to continue." << std::endl;
         getchar();
@@ -421,17 +399,9 @@ void Game::Bankrupt_( Player &bankrupt )
             cur_unit.Release();
     }
 
-    // world_player_.Remove_Player( &bankrupt );
     bankrupt.Bankrupt();
-    
+
     int number_player = world_player_.Get_Number_Player();
     world_player_.Set_Number_Player( number_player - 1 );
     return;
 }
-
-/*
-int Game::Next_Player(const int id) {
-    if(world_player_.Get_Player(id));
-    
-}
-*/

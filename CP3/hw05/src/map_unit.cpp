@@ -35,7 +35,7 @@ UpgradableUnit::UpgradableUnit(int id, std::string name, int price, int upgrade_
         travel_fine_[i] = fine[i];
     }
 }
-Condition UpgradableUnit::Travel(int player) const {// 回傳動作。
+Condition UpgradableUnit::Travel(int player) {// 回傳動作。
     MapUnit::Travel(player);
     if(player == host_){
         return UPGRADABLE;
@@ -76,7 +76,7 @@ void UpgradableUnit::Host(int player){
 CollectableUnit::CollectableUnit(int id, std::string name, int price, int fine)
     :MapUnit(id, name), host_(-1), price_(price), travel_fine_(fine){
 }
-Condition CollectableUnit::Travel(int player) const {// 回傳動作。
+Condition CollectableUnit::Travel(int player) {// 回傳動作。
     MapUnit::Travel(player);
     if(player == host_){
         return NOTHING;
@@ -111,7 +111,7 @@ void CollectableUnit::Host(int player){
 RandomCostUnit::RandomCostUnit(int id, std::string name, int price, int fine)
     :MapUnit(id, name), host_(-1), price_(price), travel_fine_(fine){
 }
-Condition RandomCostUnit::Travel(int player) const {// 回傳動作。
+Condition RandomCostUnit::Travel(int player) {// 回傳動作。
     MapUnit::Travel(player);
     if(player == host_){
         return NOTHING;
@@ -126,7 +126,7 @@ Condition RandomCostUnit::Travel(int player) const {// 回傳動作。
         return NOTHING;
     }
 }
-void RandomCostUnit::Map_Show(int num, int cont){
+void RandomCostUnit::Map_Show(int num, int cont) const {
     MapUnit::Map_Show(num, cont);
     if(host_ != -1){
         std::cout<<"<"<<host_<<"> ?  "<<"     "<<"   "<<"    "; //xn我不知道這個玩家有幾個Coll
@@ -146,7 +146,7 @@ void RandomCostUnit::Host(int player){
 JailUnit::JailUnit(int id, std::string name) 
     :MapUnit(id, name) {
 }
-Condition JailUnit::Travel(int player) const {
+Condition JailUnit::Travel(int player) {
     MapUnit::Travel(player);
     return JAIL;
 }
