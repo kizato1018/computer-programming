@@ -1,63 +1,156 @@
-#include <string>
-#include <vector>
+#include <iomanip>
 #include "map_unit.h"
 
-enum Condition { NOTHING, BUYABLE, PAY, UPGRADABLE, JAIL };
+MapUnit::MapUnit(int id, std::string name) : id_(id), name_(name), who_is_here_(0) {
+    if(id == 0)
+        who_is_here_ = ~0;
+}
 
-class MapUnit {
-public:
-    virtual Condition Travel(int player); // 回傳動作。
-    virtual void Map_Show(); // format: [id] name 
-private:
-    int id_;
-    std::string name_;
-    std::vector<int> who_is_here_;
-};
-class UpgradableUnit : public MapUnit {
-public:
-    virtual Condition Travel(int player); // 回傳動作。
-    virtual void Map_Show(){
-        MapUnit::Map_Show();
-    };
-    void Release();
-    int Buy_price() { return price_; }
-    int Upgrade_price() { return upgrade_price_; }
-    int Get_Host() { return host_; }
-    int Get_Fine() { return travel_fine_[level_-1]; }
+Condition MapUnit::Travel(int player) {// 回傳動作。
+    who_is_here_ |= (1 << player);
+}
+void MapUnit::Leave(int player) {
+    who_is_here_ &= ~(1 << player);
+}
+void MapUnit::Map_Show(int num, int cont) const { // format: [id] name 需要總玩家數 
+    std::cout<<"=";
+    for(int i=0;i<num;++i){
+        if(who_is_here_&(1<<i)){
+            std::cout<<i;
+        }
+        else{
+            std::cout<<" ";
+        }
+    }
+    std::cout<<"= ["<<std::setw(2)<<id_<<"] ";
+    std::cout<<std::setw(10)<<name_<<" ";
+}
+void MapUnit::Release() {
+    ;
+}
 
-private:
-    static constexpr int Max_level_ = 5;
-    int host_;
-    int price_;
-    int travel_fine_[Max_level_];
-    int upgrade_price_;
-    int level_;
-};
-class CollectableUnit : public MapUnit {
-public:
-    virtual Condition Travel(int player); // 回傳動作。
-    void Release();
-    int Get_Host() { return host_; }
-    int Get_Fine() { return travel_fine_; }
-private:
-    int host_;
-    int price_;
-    int travel_fine_;
-};
-class RandomCostUnit : public MapUnit {
-public:
-    virtual Condition Travel(int player); // 回傳動作。
-    void Release();
-    int Get_Host() { return host_; }
-    int Get_Fine() { return travel_fine_; }
-private:
-    int host_;
-    int price_;
-    int travel_fine_;
+UpgradableUnit::UpgradableUnit(int id, std::string name, int price, int upgrade_price, int fine[])
+    : MapUnit(id, name), host_(-1), level_(1), price_(price), upgrade_price_(upgrade_price) {
+    for(int i = 0; i < Max_level_; ++i) {
+        travel_fine_[i] = fine[i];
+    }
+}
+Condition UpgradableUnit::Travel(int player) const {// 回傳動作。
+    MapUnit::Travel(player);
+    if(player == host_){
+        return UPGRADABLE;
+    }
+    else if(host_ == -1){
+        return BUYABLE_U;
+    }
+    else if(player != host_){
+        return PAYMENT_U;
+    }
+    else{
+        return NOTHING;
+    }
+}
+void UpgradableUnit::Map_Show(int num, int cont) const {
+    MapUnit::Map_Show(num, cont);
+    if(host_ != -1){
+        std::cout<<"<"<<host_<<"> U$ ";
+        
+        std::cout<<std::setw(5)<<upgrade_price_<<" L"<<level_<<"    ";
+    }
+    else{
+        std::cout<<"    B$ ";
+        std::cout<<std::setw(5)<<price_<<"   "<<"    ";
+    }
+}
+void UpgradableUnit::Release(){ //玩家id 
+    host_ = -1;
+    level_ = 1;
+}
+void UpgradableUnit::Upgrade(){
+    level_ += 1;
+}
+void UpgradableUnit::Host(int player){
+    host_ = player;
+}
 
-};
-class JailUnit : public MapUnit {
-public:
-    virtual Condition Travel(int player); // 回傳動作。
+CollectableUnit::CollectableUnit(int id, std::string name, int price, int fine)
+    :MapUnit(id, name), host_(-1), price_(price), travel_fine_(fine){
+}
+Condition CollectableUnit::Travel(int player) const {// 回傳動作。
+    MapUnit::Travel(player);
+    if(player == host_){
+        return NOTHING;
+    } 
+    else if(host_ == -1){
+        return BUYABLE_C;
+    }
+    else if(player != host_){
+        return PAYMENT_C;
+    }
+    else{
+        return NOTHING;
+    }
+}
+void CollectableUnit::Map_Show(int num, int cont) const {
+    MapUnit::Map_Show(num, cont);
+    if(host_ != -1){
+        std::cout<<"<"<<host_<<"> x"<<cont<<" "<<"     "<<"   "<<"    "; //xn我不知道這個玩家有幾個Coll
+    }
+    else{
+        std::cout<<"    B$ ";
+        std::cout << std::setw(5) << price_<<"   "<<"    ";
+    }
+}
+void CollectableUnit::Release(){ //玩家id 
+    host_ = -1;
+}
+void CollectableUnit::Host(int player){
+    host_ = player;
+}
 
+RandomCostUnit::RandomCostUnit(int id, std::string name, int price, int fine)
+    :MapUnit(id, name), host_(-1), price_(price), travel_fine_(fine){
+}
+Condition RandomCostUnit::Travel(int player) const {// 回傳動作。
+    MapUnit::Travel(player);
+    if(player == host_){
+        return NOTHING;
+    }
+    else if(host_ == -1){
+        return BUYABLE_R;
+    }
+    else if(player != host_){
+        return PAYMENT_R;
+    }
+    else{
+        return NOTHING;
+    }
+}
+void RandomCostUnit::Map_Show(int num, int cont){
+    MapUnit::Map_Show(num, cont);
+    if(host_ != -1){
+        std::cout<<"<"<<host_<<"> ?  "<<"     "<<"   "<<"    "; //xn我不知道這個玩家有幾個Coll
+    }
+    else{
+        std::cout<<"    B$ ";
+        std::cout<<std::setw(5)<<price_<<"   "<<"    ";
+    }
 };
+void RandomCostUnit::Release(){ //玩家id 
+    host_ = -1;
+}
+void RandomCostUnit::Host(int player){
+    host_ = player;
+}
+
+JailUnit::JailUnit(int id, std::string name) 
+    :MapUnit(id, name) {
+}
+Condition JailUnit::Travel(int player) const {
+    MapUnit::Travel(player);
+    return JAIL;
+}
+void JailUnit::Map_Show(int num,int cont) const {
+    MapUnit::Map_Show(num, cont);
+    std::cout<<"JAIL   "<<"     "<<"   "<<"    ";
+}
