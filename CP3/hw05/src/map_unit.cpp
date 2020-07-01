@@ -129,7 +129,7 @@ Condition RandomCostUnit::Travel(int player) {// 回傳動作。
 void RandomCostUnit::Map_Show(int num, int cont) const {
     MapUnit::Map_Show(num, cont);
     if(host_ != -1){
-        std::cout<<"<"<<host_<<"> ?  "<<"     "<<"   "<<"    "; //xn我不知道這個玩家有幾個Coll
+        std::cout<<"<"<<host_<<"> ?  "<<"     "<<"   "<<"    ";
     }
     else{
         std::cout<<"    B$ ";
