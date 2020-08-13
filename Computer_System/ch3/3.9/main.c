@@ -2,7 +2,10 @@
 
 int F1(long n, int A[n][n], int B[n][n], long i, long k);
 
-
+void test(int i) {
+    if(i == 3) return;
+    test(i+1);
+}
 
 
 int main() {
@@ -12,4 +15,5 @@ int main() {
         B[i/3][i%3] = 9-i;
     }
     printf("%d\n", F1(3, A, B, 0, 2));
+    test(0);
 }
