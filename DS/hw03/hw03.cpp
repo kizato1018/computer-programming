@@ -19,9 +19,11 @@ public:
     
     int Row_num() const {return row_num_;}
     int Col_num() const {return col_num_;}
+    int Non_zero() const {return non_zero_;}
     void Create();
-    void Transpose();
+    Matrix Transpose() const;
     void Submatrix(const bool [], const bool []);
+    Matrix Pow(int) const;
     void Show();
     
 private:
@@ -48,30 +50,65 @@ Matrix Matrix::operator + (const Matrix& m) {
     Matrix tmp(*this);
     auto it = tmp.data_.begin();
     auto end = tmp.data_.end();
+    vector<array<int, 3> > vtmp;
     for(auto mit = m.data_.begin(); mit != m.data_.end(); ++mit) {
-        // printf("%d, %d, %d\n", (*mit)[0], (*mit)[1], (*mit)[2]);
-        // printf("%d, %d, %d\n", (*it)[0], (*it)[1], (*it)[2]);
         while(it+1 != end && (*it)[0] < (*mit)[0]) ++it;
         while(it+1 != end && (*it)[0] == (*mit)[0] && (*it)[1] < (*mit)[1]) ++it;
-        if((*it)[0] == (*mit)[0] && (*it)[1] == (*mit)[1])
+        if((*it)[0] == (*mit)[0] && (*it)[1] == (*mit)[1]) {
             (*it)[2] += (*mit)[2];
+        }
         else {
-            tmp.data_.push_back(*mit);
+            vtmp.push_back(*mit);
             ++tmp.non_zero_;
         }
-        printf("%d, %d, %d\n", (*it)[0], (*it)[1], (*it)[2]);
+        
     }
-    printf("\n");
-    for(auto it = tmp.data_.begin(); it != tmp.data_.end(); ++it)
-        printf("%d, %d, %d\n", (*it)[0], (*it)[1], (*it)[2]);
-    printf("\n");
+    for(auto i = vtmp.begin(); i != vtmp.end(); ++i) {
+        tmp.data_.push_back(*i);
+    }
     tmp.Sort();
-    for(auto it = tmp.data_.begin(); it != tmp.data_.end(); ++it)
-        printf("%d, %d, %d\n", (*it)[0], (*it)[1], (*it)[2]);
-    // tmp.Show();
     return tmp;
 }
 
+Matrix Matrix::operator * (const Matrix& m) {
+    Matrix result, m2(m.Transpose());
+    result.row_num_ = row_num_;
+    result.col_num_ = m2.row_num_;
+    auto rstart = data_.begin();
+    auto rend = rstart;
+    while(rstart != data_.end()) {
+        while(rend != data_.end() && (*(rend))[0] == (*rstart)[0]) ++rend;
+        int cur_c = 0;
+        int sum = 0;
+        for(auto cit = m2.data_.begin(); cit != m2.data_.end(); ++cit) {
+            for(auto rit = rstart; rit != rend; ++rit) {
+                if((*cit)[0] != cur_c) {
+                    if(sum != 0) {
+                        result.data_.push_back({(*rstart)[0], cur_c, sum});
+                        auto p = result.data_.back();
+                    }
+                    cur_c = (*cit)[0];
+                    sum = 0;
+                }
+                if((*rit)[1] < (*cit)[1]) continue;
+                else if((*rit)[1] > (*cit)[1]) break;
+                else {
+                    sum += (*rit)[2] * (*cit)[2];
+                    break;
+                }
+            }
+        }
+        if(sum != 0) {
+            result.data_.push_back({(*rstart)[0], cur_c, sum});
+            auto p = result.data_.back();
+        }
+
+        rstart = rend;
+    }
+    result.non_zero_ = result.data_.size();
+    
+    return result;
+}
 
 void Matrix::Create() {
     cout << "how many rows: ";
@@ -108,9 +145,6 @@ void Matrix::Submatrix (const bool row[], const bool col[]) {
 
 void Matrix::Show() {
     vector<array<int, 3> >::iterator it = data_.begin();
-    // for(auto a : data_) {
-    //     cout << a[0] << ", " << a[1] << ", " << a[2] << endl;
-    // }
     for(int i = 0; i < row_num_; ++i) {
         for(int j = 0; j < col_num_; ++j) {
             if(it != data_.end() && (*it)[0] == i && (*it)[1] == j) {
@@ -124,11 +158,32 @@ void Matrix::Show() {
     }
 }
 
-void Matrix::Transpose() { 
-    swap(row_num_, col_num_);
-    for(auto i = data_.begin(); i != data_.end(); ++i)
+Matrix Matrix::Transpose() const { 
+    Matrix tmp(*this);
+    swap(tmp.row_num_, tmp.col_num_);
+    for(auto i = tmp.data_.begin(); i != tmp.data_.end(); ++i)
         swap((*i)[0], (*i)[1]);
-    Sort();
+    tmp.Sort();
+    return tmp;
+}
+
+Matrix Matrix::Pow(int n) const {
+    Matrix result, base(*this);
+    bool first = true;
+    while(n) {
+        if(n%2) {
+            if(first) {
+                result = base;
+                first = false;
+            }
+            else 
+                result = result * base;
+        }
+        base = base * base;
+        n /= 2;
+    }
+    result.non_zero_ = result.data_.size();
+    return result;
 }
 
 map<string, Matrix> M;
@@ -163,7 +218,7 @@ void Transpose() {
     cout << "Enter matrix name." << endl;
     cin >> name;
     if(M.find(name) != M.end()) {
-        M[name].Transpose();
+        M[name] = M[name].Transpose();
         M[name].Show();
     }
     else
@@ -233,8 +288,51 @@ void Add() {
     cin >> m2;
     cout << "Enter result name: ";
     cin >> result;
+    if(M[m1].Row_num() != M[m2].Row_num() || M[m1].Col_num() != M[m2].Col_num()) {
+        cout << "Error! Incompatible matrices." << endl;
+        return; 
+    }
     M[result] = (M[m1] + M[m2]);
     M[result].Show();
+}
+
+void Mult() {
+    string m1, m2 ,result;
+    cout << "Enter M1 name: ";
+    cin >> m1;
+    cout << "Enter M2 name: ";
+    cin >> m2;
+    if(M[m1].Col_num() != M[m2].Row_num()) {
+        cout << "Error! Incompatible matrices." << endl;
+        return; 
+    }
+    cout << "Enter result name: ";
+    cin >> result;
+    M[result] = (M[m1] * M[m2]);
+    M[result].Show();
+}
+
+void Pow() {
+    string m1,result;
+    int n;
+    cout << "Enter M1 name: ";
+    cin >> m1;
+    if(M[m1].Col_num() != M[m1].Row_num()) {
+        cout << "Error! Incompatible matrices." << endl;
+        return; 
+    }
+    cout << "n = ";
+    cin >> n;
+    cout << "Enter result name: ";
+    cin >> result;
+    M[result] = M[m1].Pow(n);
+    M[result].Show();
+}
+
+void ListMatrix() {
+    printf("Matrices List:\n");
+    for(auto it = M.begin(); it != M.end(); ++it)
+        printf("%s %d %d %d\n", (*it).first.c_str(), (*it).second.Row_num(), (*it).second.Col_num(), (*it).second.Non_zero());
 }
 
 int main() {
@@ -246,23 +344,38 @@ int main() {
         cout << "2) show Matrix" << endl;
         cout << "3) Transpose Matrix" << endl;
         cout << "4) Show Submatrix" << endl;
-        cout << "5) Add two Matrix" << endl;
+        cout << "5) Matrix addition" << endl;
+        cout << "6) Matrix multiplication" << endl;
+        cout << "7) Matrix power" << endl;
+        cout << "0) exit" << endl;
         cin >> c;
         switch (c) {
         case 1:
             New_Matrix();
             break;
         case 2:
+            ListMatrix();
             Show();
             break;
         case 3:
+            ListMatrix();
             Transpose();
             break;
         case 4:
+            ListMatrix();
             Submatrix();
             break;
         case 5:
+            ListMatrix();
             Add();
+            break;
+        case 6:
+            ListMatrix();
+            Mult();
+            break;
+        case 7:
+            ListMatrix();
+            Pow();
             break;
         case 0:
             return 0;
