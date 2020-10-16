@@ -2,9 +2,7 @@
 #include <cstdio>
 #include <vector>
 #include <map>
-#include <sstream>
 #include <algorithm>
-#include <cstdlib>
 
 using namespace std;
 
@@ -15,7 +13,6 @@ public:
     Matrix& operator = (const Matrix&);
     Matrix operator + (const Matrix&);
     Matrix operator * (const Matrix&);
-    
     
     int Row_num() const {return row_num_;}
     int Col_num() const {return col_num_;}
@@ -33,6 +30,7 @@ private:
     vector<array<int, 3> > data_;
     void Sort();
 };
+map<string, Matrix> M;
 
 void Matrix::Sort() {
     sort(data_.begin(), data_.end(), [](const array<int, 3> a, const array<int, 3> b) { return a[0] < b[0] || (a[0] == b[0] && a[1] < b[1]); } );
@@ -124,6 +122,7 @@ void Matrix::Create() {
         data_.push_back(data);
     }
     Sort();
+    return;
 }
 
 void Matrix::Submatrix (const bool row[], const bool col[]) {
@@ -141,10 +140,11 @@ void Matrix::Submatrix (const bool row[], const bool col[]) {
         }
         cout << endl;
     }
+    return;
 }
 
 void Matrix::Show() {
-    vector<array<int, 3> >::iterator it = data_.begin();
+    auto it = data_.begin();
     for(int i = 0; i < row_num_; ++i) {
         for(int j = 0; j < col_num_; ++j) {
             if(it != data_.end() && (*it)[0] == i && (*it)[1] == j) {
@@ -156,14 +156,25 @@ void Matrix::Show() {
         }
         cout << endl;
     }
+    return;
 }
 
 Matrix Matrix::Transpose() const { 
     Matrix tmp(*this);
-    swap(tmp.row_num_, tmp.col_num_);
-    for(auto i = tmp.data_.begin(); i != tmp.data_.end(); ++i)
-        swap((*i)[0], (*i)[1]);
-    tmp.Sort();
+    int index[col_num_+1] = {0};
+    int i = 0;
+    int cnt = 0;
+    for(auto it : data_) 
+        ++index[it[1]+1];
+    for(int i = 0; i < col_num_; ++i) {
+        index[i] += cnt;
+        cnt = index[i];
+    }
+    for(auto it = data_.begin(); it != data_.end(); ++it) {
+        tmp.data_[index[(*it)[1]]] = {(*it)[1], (*it)[0], (*it)[2]};
+        ++index[(*it)[1]];
+    }
+    swap(tmp.col_num_, tmp.row_num_);
     return tmp;
 }
 
@@ -186,10 +197,6 @@ Matrix Matrix::Pow(int n) const {
     return result;
 }
 
-map<string, Matrix> M;
-
-
-
 void New_Matrix() {
     string name;
     cout << "Enter matrix name." << endl;
@@ -211,6 +218,7 @@ void Show() {
         M[name].Show();
     else
         cout << "no this matrix." << endl;
+    return;
 }
 
 void Transpose() {
@@ -223,6 +231,7 @@ void Transpose() {
     }
     else
         cout << "no this matrix." << endl;
+    return;
 }
 
 void Submatrix() {
@@ -278,6 +287,7 @@ void Submatrix() {
         col[c] = true;
     }
     M[name].Submatrix(row, col);
+    return;
 }
 
 void Add() {
@@ -294,6 +304,7 @@ void Add() {
     }
     M[result] = (M[m1] + M[m2]);
     M[result].Show();
+    return;
 }
 
 void Mult() {
@@ -310,6 +321,7 @@ void Mult() {
     cin >> result;
     M[result] = (M[m1] * M[m2]);
     M[result].Show();
+    return;
 }
 
 void Pow() {
@@ -327,16 +339,17 @@ void Pow() {
     cin >> result;
     M[result] = M[m1].Pow(n);
     M[result].Show();
+    return;
 }
 
 void ListMatrix() {
     printf("Matrices List:\n");
     for(auto it = M.begin(); it != M.end(); ++it)
         printf("%s %d %d %d\n", (*it).first.c_str(), (*it).second.Row_num(), (*it).second.Col_num(), (*it).second.Non_zero());
+    return;
 }
 
 int main() {
-    
     bool exit = false;
     while(!exit) {
         int c;
@@ -378,13 +391,14 @@ int main() {
             Pow();
             break;
         case 0:
-            return 0;
+            exit = true;
+            break;
         default:
+            cout << "Error! No this option!" << endl;
             break;
         }
     }
-
-    
+    return 0;
 }
 /*
 Apple
