@@ -140,6 +140,7 @@ void Matrix::Submatrix (const bool row[], const bool col[]) {
         }
         cout << endl;
     }
+    cout << endl;
     return;
 }
 
@@ -156,6 +157,7 @@ void Matrix::Show() {
         }
         cout << endl;
     }
+    cout << endl;
     return;
 }
 
@@ -199,11 +201,12 @@ Matrix Matrix::Pow(int n) const {
 
 void New_Matrix() {
     string name;
-    cout << "Enter matrix name." << endl;
+    cout << "Enter matrix name: ";
     cin >> name;
     Matrix m;
     m.Create();
     M[name] = Matrix(m);
+    cout << name << " " << m.Row_num() << " " << m.Col_num() << endl;
     M[name].Show();
     return;
 }
@@ -211,7 +214,7 @@ void New_Matrix() {
 
 void Show() {
     string name;
-    cout << "Enter matrix name." << endl;
+    cout << "Enter matrix name: ";
     cin >> name;
 
     if(M.find(name) != M.end())
@@ -223,7 +226,7 @@ void Show() {
 
 void Transpose() {
     string name;
-    cout << "Enter matrix name." << endl;
+    cout << "Enter matrix name: ";
     cin >> name;
     if(M.find(name) != M.end()) {
         M[name] = M[name].Transpose();
@@ -236,7 +239,7 @@ void Transpose() {
 
 void Submatrix() {
     string name;
-    cout << "Enter matrix name." << endl;
+    cout << "Enter matrix name: ";
     cin >> name;
     int rn;
     int cn;
@@ -307,23 +310,6 @@ void Add() {
     return;
 }
 
-void Mult() {
-    string m1, m2 ,result;
-    cout << "Enter M1 name: ";
-    cin >> m1;
-    cout << "Enter M2 name: ";
-    cin >> m2;
-    if(M[m1].Col_num() != M[m2].Row_num()) {
-        cout << "Error! Incompatible matrices." << endl;
-        return; 
-    }
-    cout << "Enter result name: ";
-    cin >> result;
-    M[result] = (M[m1] * M[m2]);
-    M[result].Show();
-    return;
-}
-
 void Pow() {
     string m1,result;
     int n;
@@ -355,11 +341,10 @@ int main() {
         int c;
         cout << "1) Enetr Matrix" << endl;
         cout << "2) show Matrix" << endl;
-        cout << "3) Transpose Matrix" << endl;
-        cout << "4) Show Submatrix" << endl;
+        cout << "3) Show Submatrix" << endl;
+        cout << "4) Transpose Matrix" << endl;
         cout << "5) Matrix addition" << endl;
-        cout << "6) Matrix multiplication" << endl;
-        cout << "7) Matrix power" << endl;
+        cout << "6) Matrix power" << endl;
         cout << "0) exit" << endl;
         cin >> c;
         switch (c) {
@@ -372,21 +357,17 @@ int main() {
             break;
         case 3:
             ListMatrix();
-            Transpose();
+            Submatrix();
             break;
         case 4:
             ListMatrix();
-            Submatrix();
+            Transpose();
             break;
         case 5:
             ListMatrix();
             Add();
             break;
         case 6:
-            ListMatrix();
-            Mult();
-            break;
-        case 7:
             ListMatrix();
             Pow();
             break;
