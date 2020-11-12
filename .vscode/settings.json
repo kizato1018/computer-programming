@@ -74,5 +74,6 @@
         "typeinfo": "cpp",
         "hash_map": "cpp",
         "hash_set": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
