@@ -1,0 +1,3 @@
+﻿  Assembling ..\hw01.asm...
+C:/irvine/SmallWin.inc(11): warning A4011: multiple .MODEL directives found : .MODEL ignored
+  hw01.vcxproj -> D:\Desktop\computer-programming\asm\hw01\hw01\Debug\hw01.exe

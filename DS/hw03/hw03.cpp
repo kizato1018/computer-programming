@@ -113,15 +113,19 @@ void Matrix::Create() {
     cin >> row_num_;
     cout << "how many columns: ";
     cin >> col_num_;
-    cout << "how many non-zero elements: ";
-    cin >> non_zero_;
-    cout << "enter the elements (format: 0 0 0):" << endl;
-    for(int i = 0; i < non_zero_; ++i) {
-        array<int, 3> data;
-        cin >> data[0] >> data[1] >> data[2];
-        data_.push_back(data);
+    cout << "enter the matrix:" << endl;
+    for(int i = 0; i < row_num_; ++i) {
+        for(int j = 0; j < col_num_; ++j) {
+            int input;
+            cin >> input;
+            if(input != 0) {
+                ++non_zero_;
+                data_.push_back({i, j, input});
+            }
+        }
+
     }
-    Sort();
+    // Sort();
     return;
 }
 
