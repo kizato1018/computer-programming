@@ -8,4 +8,5 @@ int main() {
     string str;
     cin >> str;
     cout << exp1.GetExpression(str);
+    exp1.Show();
 }

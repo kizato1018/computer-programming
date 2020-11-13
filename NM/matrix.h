@@ -28,7 +28,7 @@ public:
     Matrix Subtract(int);
     Matrix Inverse() const;
 
-    void Input();
+    Matrix& Input();
     void Show();
 
 private:
@@ -39,7 +39,8 @@ private:
 };
 Matrix In(int);
 Matrix NewMatrix ();
-Matrix Elimination(Matrix,Matrix&,Matrix&,Matrix&);
-Matrix Elimination(Matrix, Matrix&, Matrix&);
+Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&, Matrix&);
+Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&);
+Matrix Gaussian(Matrix, Matrix);
 Matrix Jacobi(Matrix A, Matrix b);
 #endif

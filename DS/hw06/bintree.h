@@ -1,26 +1,39 @@
 #ifndef __BINTREE_H__
 #define __BINTREE_H__
 
-template <typename T>
+enum Tag{Operand, Operator};
 class Node {
 public:
     Node() {}
-    Node(T value) : value(value) {}
-    friend class bintree;
+    Node(Tag t) : tag(t) {}
+    Node(int value, Tag t, int level) : value(value), tag(t), level(level) {}
+    bool isFull() { return left != nullptr & right != nullptr; }
+    bool operator < (const Node);
+    bool operator >= (const Node);
+    friend class expretree;
 private:
-    T value = 0;
+    Tag tag; 
+    int value = 0;
+    int level = 0;
     Node *parent = nullptr;
     Node *left = nullptr;
     Node *right = nullptr;
 };
 
-template <typename T>
-class bintree {
+class expretree {
 public:
-    bintree(){}
-    bintree(T value);
+    expretree() {}
+    void postfix() {postfix(root);}
+    int level = 0;
+    expretree& push(int);
+    expretree& push(char);
 private:
+    void postfix(Node*);
+    // Node* NewNode(char);
+    // Node* NewNode(int);
+    int Getpriority(Node);
     Node *root = nullptr;
+    Node *prev = nullptr;
 };
 
 

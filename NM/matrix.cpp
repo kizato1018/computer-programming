@@ -79,37 +79,13 @@ Matrix Matrix::operator+(const Matrix& M) const {
     Matrix tmp(*this);
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
-<<<<<<< HEAD
-            tmp[i][j] += M.v[i][j];
-=======
             tmp[i][j] += M[i][j];
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
         }
     }
     return tmp;
 }
 
 Matrix Matrix::operator*(const Matrix& M) const {
-<<<<<<< HEAD
-    vector<vector<double> > tmp;
-    for(int i = 0; i < row_; ++i) {
-        vector<double> tmpv;
-        for(int j = 0; j < M.col_; ++j) {
-            double sum = 0;
-            for(int k = 0; k < col_; ++k) {
-                sum += v[i][k] * M.v[k][j];
-            }
-            // printf("[%d][%d]=%lf\n", i, j, sum);
-            tmpv.push_back(sum);
-        }
-        tmp.push_back(tmpv);
-    }
-    Matrix result(row_, M.col_, tmp);
-    return result;
-}
-
-Matrix Matrix::operator*(const int c) const {
-=======
     Matrix tmp(row_, M.col_);
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < M.col_; ++j) {
@@ -124,7 +100,6 @@ Matrix Matrix::operator*(const int c) const {
 }
 
 Matrix Matrix::operator*(int c) const {
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
     Matrix tmp(*this);
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
@@ -144,31 +119,13 @@ Matrix Matrix::operator-(const Matrix& M) const{
 bool Matrix::operator==(const Matrix& M) const {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
-<<<<<<< HEAD
-            if(abs(v[i][j] - M[i][j]) >= 0.00001)
-=======
             if(abs((*this)[i][j] - M[i][j]) >= 0.00001)
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
                 return false;
         }
     }
     return true;
 }
 
-<<<<<<< HEAD
-void Matrix::Input() {
-    printf("enter (row col): ");
-    cin >> row_ >> col_;
-    printf("enter matrix:\n");
-    for(int i = 0; i < row_; ++i) {
-        vector<double> tmp;
-        for(int j = 0; j < col_; ++j) {
-            double d;
-            cin >> d;
-            tmp.push_back(d);
-        }
-        v.push_back(tmp);
-=======
 Matrix& Matrix::Append(const Matrix& M) {
     int offset = col_;
     col_ += M.col_;
@@ -203,33 +160,24 @@ Matrix Matrix::Inverse() const {
     return tmp;
 }
 
-void Matrix::Input() {
+Matrix& Matrix::Input() {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
             cin >> (*this)[i][j];
         }
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
     }
+    return *this;
 }
 
 void Matrix::Show() {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
-<<<<<<< HEAD
-            printf("%.4lf ", v[i][j]);
-=======
             printf("%.4lf ", (*this)[i][j]);
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
         }
         puts("");
     }
 }
 
-<<<<<<< HEAD
-Matrix D_Inv(Matrix& D) {
-    Matrix D_inv;
-    D_inv = D;
-=======
 Matrix In(int n) {
     Matrix In(n, n);
     for(int i = 0; i < n; ++i)
@@ -239,7 +187,6 @@ Matrix In(int n) {
 
 Matrix D_Inv(Matrix& D) {
     Matrix D_inv(D);
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
     for(int i = 0; i < D.Row(); ++i) {
         D_inv[i][i] = 1 / D[i][i];
     }
@@ -247,59 +194,6 @@ Matrix D_Inv(Matrix& D) {
 }
 
 
-<<<<<<< HEAD
- void Jacobi(Matrix A, Matrix b, Matrix& x) {
-    Matrix D, L, U, D_inv, pre_x;
-    D = A;
-    L = A;
-    U = A;
-    x = b;
-    for(int i = 0; i < x.Row(); ++i) x[i][0] = 0;
-    pre_x = x;
-    for(int i = 0; i < A.Row(); ++i) {
-        if(i >= 1) {
-            D[i-1][i] = 0;
-            D[i][i-1] = 0;
-            L[i-1][i] = 0;
-            U[i][i-1] = 0;
-        }
-        L[i][i] = 0;
-        U[i][i] = 0;
-    }
-    D_inv = D_Inv(D);
-    // cout << "D_inv:" << endl;
-    // D_inv.Show();
-
-    int cnt = 0;
-    do{
-        // printf("cnt=%d\n", ++cnt);
-        // cout << "prex: " << endl;
-        // pre_x.Show();
-        pre_x = x;
-        x = D_inv * (b - (L + U) * pre_x);
-        // cout << "x: " << endl;
-        // x.Show();
-    }while(x != pre_x);
-
-    return;
- }
-
-
-int main() {
-    Matrix A, b, x;
-    A.Input();
-    b.Input();
-    cout << "A:" << endl;
-    A.Show();
-    cout << "b:" << endl;
-    b.Show();
-    Jacobi(A, b, x);
-    cout << "x:" << endl;
-    x.Show();
-
-}
-
-=======
 Matrix Jacobi(Matrix A, Matrix b) {
     int r = A.Row(), c = A.Col();
     Matrix D(r, c), L(r, c), U(r, c), D_inv(r, c), pre_x(r, 1), x(r, 1);
@@ -346,7 +240,7 @@ Matrix NewMatrix () {
 }
 
 
-Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P) {
+Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P, Matrix& c) {
     int N = M.Row();
     P = In(N);
     L = In(N);
@@ -362,6 +256,7 @@ Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P) {
                 swap(P[max][j], P[i][j]);
                 swap(M[max][j], M[i][j]);
             }
+            swap(c[max][0], c[i][0]);
             // cout << "i: " << i << endl;
             // cout << "max: " << max << endl;
             // Show(M);
@@ -373,7 +268,11 @@ Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P) {
             for(int k = i; k < N; ++k) {
                 M[j][k] -= M[i][k]*d; 
             }
-            
+            c[j][0] -= c[i][0]*d;
+            // cout << "El:" << endl;
+            // Matrix tmp(M);
+            // tmp.Append(c).Show();
+            // cout << endl;
         }
         if(max != i) {
             for(int j = 0; j < max && j < i; ++j) {
@@ -385,9 +284,24 @@ Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P) {
     return M;
 }
 
-Matrix Elimination(Matrix M, Matrix& L, Matrix& U) {
+Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& c) {
     Matrix P;
-    return Elimination(M, L, U, P);
+    return Elimination(M, L, U, P, c);
+}
+
+Matrix Gaussian(Matrix M, Matrix c) {
+    int N = M.Row();
+    Matrix L, U, ans(N, 1);
+    M = Elimination(M, L, U, c);
+    M.Append(c);
+    // Show(M);
+    for(int i = N-1; i >= 0; --i) {
+        for(int j = i; j < N; ++j) {
+            M[i][N] -= (M[i][j] * ans[j][0]);
+        }
+        ans[i][0] = M[i][N] / M[i][i];
+    }
+    return ans;
 }
 
 // int main() {
@@ -408,7 +322,6 @@ Matrix Elimination(Matrix M, Matrix& L, Matrix& U) {
 
 // }
 
->>>>>>> 7e89d1f003aaafcad3734b62cd8e5e536fe78bb0
 
 /*
 10 10

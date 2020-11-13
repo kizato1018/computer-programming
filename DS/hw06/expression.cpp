@@ -46,7 +46,7 @@ int expression::CheckExpression_(const string s) {
     for(int index = 0; ; ++index) {
         index = s.find("(", index);
         if(index == np || index+1 > s.length()) break;
-        if(string("+-*/").find(s[index+1]) != np) {
+        if(string("+*/").find(s[index+1]) != np) {
             cout << "Left parenthesis followed by an operator" << endl;
             return 6;
         }
@@ -80,14 +80,19 @@ int expression::CheckExpression_(const string s) {
     return 0;
 }
 
-int expression::Getoperand_(const string s, int index) {
+int expression::Getoperand_(const string s, int& index) {
     int digit = s.find_first_not_of("0123456789", index);
     if(digit == string::npos) digit = s.length();
-    string str = s.substr(index, digit-index);
+    digit -= index;
+    string str = s.substr(index, digit);
     int val = 0;
+    int base = 1;
     for(auto i = str.rbegin(); i != str.rend(); ++i) {
-        val = val * 10 + (*i);
+        val += (*i - '0') * base;
+        base *= 10;
+        // cout << "val:" << val <<endl;
     }
+    index += digit-1;
     return val;
 }
 
@@ -98,10 +103,54 @@ char expression::Getoperator_(const string s, int index) {
 int expression::GetExpression(const string s) {
     if(int r = CheckExpression_(s)) return r;
     for(int i = 0; i < s.length(); ++i) {
-        if(isdigit(s[i]))
-            operand_.push(Getoperand_(s, i));
-        else 
+        if(isdigit(s[i])) {
+            int val = Getoperand_(s, i);
+            operand_.push(val);
+            expre_.push(val);
+        }
+        else if(s[i] == '(' && s[i+1] == '-') {
+            char ch = Getoperator_(s, i);
+            int val = Getoperand_(s, i) * -1;
+            operator_.push(ch);
+            i += 2;
+            operand_.push(val);
+            expre_.push(Getoperand_(s, i) * -1);
+        }
+        else if(s[i] == '(') {
             operator_.push(Getoperator_(s, i));
+            ++expre_.level;
+        }
+        else if(s[i] == ')') {
+            operator_.push(Getoperator_(s, i));
+            --expre_.level;
+        }
+        else {
+            char ch = Getoperator_(s, i);
+            operator_.push(ch);
+            expre_.push(ch);
+        }
     }
     return 0;
 }
+
+void expression::Show() {
+    stack<int> a(operand_);
+    stack<char> b(operator_);
+    cout << "operand: ";
+    while(!a.empty()) {
+        cout << a.top() << " ";
+        a.pop();
+    }
+    cout << endl << "operator: ";
+    while(!b.empty()) {
+        cout << b.top() << " ";
+        b.pop();
+    }
+    cout << endl;
+    cout << "postfix: ";
+    expre_.postfix();
+}
+
+/*
+1/(2*((-3)-2))+5
+*/
