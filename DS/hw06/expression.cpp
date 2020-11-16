@@ -109,12 +109,13 @@ int expression::GetExpression(const string s) {
             expre_.push(val);
         }
         else if(s[i] == '(' && s[i+1] == '-') {
+            i += 2;
             char ch = Getoperator_(s, i);
             int val = Getoperand_(s, i) * -1;
-            operator_.push(ch);
-            i += 2;
+            i += 1;
+            // operator_.push('(');
             operand_.push(val);
-            expre_.push(Getoperand_(s, i) * -1);
+            expre_.push(val);
         }
         else if(s[i] == '(') {
             operator_.push(Getoperator_(s, i));
@@ -130,6 +131,7 @@ int expression::GetExpression(const string s) {
             expre_.push(ch);
         }
     }
+    result_ = expre_.calculate();
     return 0;
 }
 
@@ -150,6 +152,7 @@ void expression::Show() {
     cout << "postfix: ";
     expre_.postfix();
 }
+
 
 /*
 1/(2*((-3)-2))+5
