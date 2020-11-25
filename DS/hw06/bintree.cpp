@@ -1,6 +1,5 @@
 #include "bintree.h"
 #include <iostream>
-#include <stack>
 #include <cstdlib>
 
 using namespace std;
@@ -70,7 +69,7 @@ expretree& expretree::push(char v) {
         newNode->parent = lc;
     }
     prev = newNode;
-    postfix();
+    // postfix();
     // system("pause");
     return *this;
 }
@@ -95,27 +94,27 @@ void expretree::postfix_(Node* tmp) {
 }
 
 double expretree::calculate_(Node* tmp) {
-    static stack<double> opd;
+    static double opd[1000] = {0};
+    static int top = -1;
     if(tmp->left != nullptr) calculate_(tmp->left);
     if(tmp->right != nullptr) calculate_(tmp->right);
     double l,r;
     switch(tmp->tag) {
         case Operand:
-            opd.push((double)tmp->value);
+            opd[++top] = (double)tmp->value;
             // cout << opd.size() << " " << opd.top() << endl;
             break;
         case Operator:
-            r = opd.top(); opd.pop();
-            l = opd.top(); opd.pop();
-            opd.push(cal(l,r,tmp->value));
+            r = opd[top--];
+            l = opd[top--];
+            opd[++top] = cal(l,r,tmp->value);
             break;
         default:
             cout << "error" << endl;
             break;
     }
     if(tmp == root) {
-        double result = opd.top();
-        opd.pop();
+        double result = opd[top--];
         return result;
     }
     return 0;
