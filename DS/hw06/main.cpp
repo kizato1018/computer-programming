@@ -13,8 +13,11 @@ int main() {
         cout << c;
         cin >> tmp;
         str = c + tmp;
-        cout << express.GetExpression(str) << endl;
+        if(express.GetExpression(str)) {
+            continue;
+        }
         express.Show();
         cout << "result:" << express.GetResult() << endl;
     }
+    return 0;
 }
