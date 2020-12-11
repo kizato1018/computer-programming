@@ -1,7 +1,6 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 #include <iostream>
-#include <vector>
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
@@ -27,6 +26,7 @@ public:
     Matrix& Append(const Matrix&);
     Matrix Subtract(int);
     Matrix Inverse() const;
+    Matrix Transpose() const;
 
     Matrix& Input();
     void Show();
