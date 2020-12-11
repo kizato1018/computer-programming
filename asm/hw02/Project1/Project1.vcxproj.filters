@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="hw02.asm">
+    <MASM Include="hw02_1.asm">
+      <Filter>資源檔</Filter>
+    </MASM>
+    <MASM Include="hw02_2.asm">
       <Filter>資源檔</Filter>
     </MASM>
   </ItemGroup>

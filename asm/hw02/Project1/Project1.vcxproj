@@ -129,8 +129,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="hw02.asm">
+    <MASM Include="hw02_1.asm">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="hw02_2.asm">
+      <FileType>MASM</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

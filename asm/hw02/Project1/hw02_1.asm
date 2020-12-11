@@ -5,9 +5,10 @@ INCLUDE C:/irvine/IRVINE32.INC
 ExitProcess proto,dwExitCode:dword
 
 .data
+t1 BYTE "程式1", 0
 str1 BYTE "輸入被乘數：", 0
 str2 BYTE "輸入乘數：", 0
-str3 BYTE "陣列1的和：", 0
+str3 BYTE "答案：", 0
 
 buffer BYTE 10 DUP (?)
 s1 BYTE 10 DUP (?)
@@ -17,11 +18,16 @@ num2 SDWORD 0
 s1_len BYTE ?
 s2_len BYTE ?
 
-ans1 SDWORD ?
-ans2 SDWORD ?
+
+ans SDWORD ?
+ans_len BYTE 0
+ans_s BYTE 10 DUP (?)
 
 .code
 main proc
+	mov edx, OFFSET t1
+	call WriteString
+	call CRLF
 	mov edx, OFFSET str1
 	call WriteString
 	mov edx, OFFSET s1
@@ -34,6 +40,7 @@ main proc
 	mov ecx, 6
 	call ReadString
 	mov s2_len, al
+	
 	movzx ecx, s1_len
 	mov esi, OFFSET s1
 ToDec1:
@@ -55,7 +62,7 @@ ToDec2:
 	imul eax, 10
 	mov num2, eax
 	movzx eax, BYTE PTR [esi]
-	sub eax, 48
+	sub eax, 30h
 	add num2, eax
 	inc esi
 	;mov eax, num2
@@ -74,15 +81,43 @@ next:
 	shr edx, 1
 	jnz BinMul
 
-	mov ans1, eax
-	call WriteDec
-	call CRLF
-	mov eax, num1  
-	mov ebx, num2
-	imul ebx
-	mov ans2, eax
-	call WriteDec
-	
+	mov ans, eax
+	;call WriteDec
+	;call CRLF
+
+	mov	esi, 0
+	mov ebx, 10
+ToStr:
+	mov edx, 0
+	div ebx
+	add edx, 30h
+	mov ans_s[esi], dl
+	inc esi
+	test eax, eax
+	jnz ToStr
+
+	mov eax, esi
+	mov ebx, 2
+	mov edx, 0
+	div ebx
+	mov ecx, eax
+	mov edi, 0
+	dec esi
+RevStr:
+	movzx eax, ans_s[esi]
+	movzx ebx, ans_s[edi]
+	xchg eax, ebx
+	mov ans_s[esi], al
+	mov ans_s[edi], bl
+	dec esi
+	inc edi
+	loop RevStr
+
+	mov edx, OFFSET str3
+	call WriteString
+	mov edx, OFFSET ans_s
+	call WriteString
+
 
 
 
