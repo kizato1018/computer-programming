@@ -160,6 +160,16 @@ Matrix Matrix::Inverse() const {
     return tmp;
 }
 
+Matrix Matrix::Transpose() const {
+    Matrix tmp(col_, row_);
+    for(int i = 0; i < tmp.Row(); ++i) {
+        for(int j = 0; j < tmp.Col(); ++j) {
+            tmp[i][j] = (*this)[j][i];
+        }
+    }
+    return tmp;
+}
+
 Matrix& Matrix::Input() {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {

@@ -4,17 +4,17 @@
 using namespace std;
 
 int main() {
-    Matrix A, b, x(6,1);
-    A = NewMatrix();
-    b = NewMatrix();
-    cout << "A:" << endl;
-    A.Show();
-    cout << "b:" << endl;
-    b.Show();
-    x = Jacobi(A, b);
-    cout << "x:" << endl;
-    x.Show();
-
+    // Matrix A, b, x(6,1);
+    // A = NewMatrix();
+    // b = NewMatrix();
+    // cout << "A:" << endl;
+    // A.Show();
+    // cout << "b:" << endl;
+    // b.Show();
+    // x = Jacobi(A, b);
+    // cout << "x:" << endl;
+    // x.Show();
+    // cout << (0.0042 - 0.001) / 200;
 }
 
 /*
