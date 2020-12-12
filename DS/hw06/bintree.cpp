@@ -40,7 +40,7 @@ expretree& expretree::push(int v) {
         newNode->parent = prev;
     }
     prev = newNode;
-    postfix();
+    // postfix();
     return *this;
 }
 expretree& expretree::push(char v) {
@@ -79,7 +79,10 @@ void expretree::postfix_(Node* tmp) {
     if(tmp->right != nullptr) postfix_(tmp->right);
     switch(tmp->tag) {
         case Operand:
-            cout << (int)tmp->value << " ";
+            if(tmp->value < 0) 
+                cout << "(" << (int)tmp->value << ") ";
+            else
+                cout << (int)tmp->value << " ";
             break;
         case Operator:
             cout << (char)tmp->value << " ";

@@ -35,7 +35,7 @@ private:
     double calculate_(Node*);
     // Node* NewNode(char);
     // Node* NewNode(int);
-    int Getpriority(Node);
+    // int Getpriority(Node);
     Node *root = nullptr;
     Node *prev = nullptr;
 };

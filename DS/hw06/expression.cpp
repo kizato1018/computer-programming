@@ -5,9 +5,13 @@
 
 using namespace std;
 
-bool expression::CheckExpression_(const string s) {
+bool expression::CheckExpression_(const string& s) {
     size_t np = string::npos;
     bool flag = false;
+    if(s.length() > 20) {
+        cout << "Error - line contains more characters than allowed." << endl;
+        return true;
+    }
     if(s.find_first_not_of("0123456789()+-*/") != np) {
         cout << "Illegal character" << endl;
         flag = true;
@@ -51,10 +55,12 @@ bool expression::CheckExpression_(const string s) {
     for(int index = 0; ; ++index) {
         index = s.find("(", index);
         if(index == np || index+1 > s.length()) break;
-        if(string("+*/").find(s[index+1]) != np) {
-            cout << "Left parenthesis followed by an operator" << endl;
-            flag = true;
-            break;
+        if(string("+-*/").find(s[index+1]) != np) {
+            if(s[index+1] != '-' || (!isdigit(s[index+2]))) {
+                cout << "Left parenthesis followed by an operator" << endl;
+                flag = true;
+                break;
+            }
         }
         if(index > 0 && isdigit(s[index-1])) {
             cout << "Identifier followed by a left parenthesis" << endl;
@@ -90,7 +96,7 @@ bool expression::CheckExpression_(const string s) {
     return flag;
 }
 
-int expression::Getoperand_(const string s, int& index) {
+int expression::Getoperand_(const string& s, int index) {
     int digit = s.find_first_not_of("0123456789", index);
     if(digit == string::npos) digit = s.length();
     digit -= index;
@@ -106,11 +112,11 @@ int expression::Getoperand_(const string s, int& index) {
     return val;
 }
 
-char expression::Getoperator_(const string s, int index) {
+char expression::Getoperator_(const string& s, int index) {
     return s[index];
 }
 
-bool expression::GetExpression(const string s) {
+bool expression::GetExpression(const string& s) {
     if(CheckExpression_(s)) return true;
     for(int i = 0; i < s.length(); ++i) {
         if(isdigit(s[i])) {
