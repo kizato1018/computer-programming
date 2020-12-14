@@ -111,9 +111,9 @@ Node<T>* BinTree<T>::Find(T val) const {
 // template <typename T>
 // void BinTree<T>::PushLeftMost(T val) {
 //     Node<T>* tmp = new Node<T>(val);
-//     tmp->parent = LeftMost;
-//     LeftMost->left = tmp;
-//     LeftMost = tmp;
+//     tmp->parent = left_most;
+//     left_most->left = tmp;
+//     left_most = tmp;
 //     ++size_;
     
 // }
@@ -124,8 +124,8 @@ void BinTree<T>::Push(T val) {
     Node<T>* parent = root;
     if(isEmpty()) {
         root = tmp;
-        LeftMost = tmp;
-        Last = tmp;
+        left_most = tmp;
+        last = tmp;
         ++size_;
         return;
     }
@@ -135,11 +135,11 @@ void BinTree<T>::Push(T val) {
     tmp->parent = parent;
     if(!parent->left) {
         parent->left = tmp;
-        if(parent == LeftMost)
-            LeftMost = tmp;
+        if(parent == left_most)
+            left_most = tmp;
     }
     else 
         parent->right = tmp;
-    Last = tmp;
+    last = tmp;
     ++size_;
 }
