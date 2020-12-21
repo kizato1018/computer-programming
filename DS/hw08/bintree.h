@@ -5,7 +5,6 @@
 
 template <typename T>
 struct Node{
-public:
     Node() {}
     Node(T val) : value(val) {}
     bool isLeaf() { return left_thread & right_thread; }
