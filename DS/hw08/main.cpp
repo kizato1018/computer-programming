@@ -53,34 +53,9 @@ int main() {
     }
     if(!flag)
         cout << "Not Found" << endl;
-    // BST<int> B;
-    // int x;
-    // for(int i = 0 ; i < 10; ++i) {
-    //     cin >> x;
-    //     B.Push(x);
-    // }
-    // cout << endl;
-
-    // B.Show();
-    // cin >> x;
-    // B.Delete(x);
-    // B.Show();
-
-    // Node<int>* f = B.Find(x);
-    // int v, p, l, r;
-    // v = (f) ? f->value : -1;
-    // p = (f->parent) ? f->parent->value : -1;
-    // l = (f->left) ? f->left->value : -1;
-    // r = (f->right) ? f->right->value : -1;
-    // printf("%d P:%d L:%d R:%d\n", v, p, l, r);
 
 }
 
 /*
 040 020 060 010 030 050 070 045 055 052
-
-星期 早上 (8~11)
-星期 中午 (11~14)
-星期 下午 (14~18)
-星期 晚上 (18~21)
 */

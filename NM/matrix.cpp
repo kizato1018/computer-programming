@@ -188,6 +188,23 @@ void Matrix::Show() {
     }
 }
 
+Matrix Matrix::Vector(int col) const {
+    Matrix tmp(row_, 1);
+    for(int i = 0; i < row_; ++i) {
+        tmp[i][0] = (*this)[i][col];
+    }
+    return tmp;
+}
+
+double Matrix::length(int col) const {
+    double l = 0;
+    for(int i = 0; i < row_; ++i) {
+        l += pow((*this)[i][col],2);
+    }
+    l = sqrt(l);
+    return l;
+}
+
 Matrix In(int n) {
     Matrix In(n, n);
     for(int i = 0; i < n; ++i)

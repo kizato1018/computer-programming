@@ -8,7 +8,7 @@
 class Matrix {
 public:
     Matrix() : row_(0), col_(0), v_(nullptr) {};
-    Matrix(int, int);
+    Matrix(int row, int col);
     Matrix(const Matrix&);
     // Matrix(int r, int c, vector<vector<double> > val) : row_(r), col_(c), v(val) {};
     Matrix& operator=(const Matrix&);
@@ -27,6 +27,8 @@ public:
     Matrix Subtract(int);
     Matrix Inverse() const;
     Matrix Transpose() const;
+    Matrix Vector(int col) const;
+    double length(int col) const;
 
     Matrix& Input();
     void Show();

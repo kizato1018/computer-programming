@@ -20,9 +20,9 @@ void BST<T>::Show() const {
     Node<T>** arr = BinTree<T>::BFS();
     for(int i = 0; i < this->Size(); ++i) {
         if(!arr[i]->left_thread)
-            cout << arr[i]->value << "->" << arr[i]->left->value << " L" << endl;
+            cout << arr[i]->value << " -> " << arr[i]->left->value << " L" << endl;
         if(!arr[i]->right_thread)
-            cout << arr[i]->value << "->" << arr[i]->right->value << " R" << endl;
+            cout << arr[i]->value << " -> " << arr[i]->right->value << " R" << endl;
     }
     cout << endl;
 }
