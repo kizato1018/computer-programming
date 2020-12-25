@@ -179,7 +179,7 @@ Matrix& Matrix::Input() {
     return *this;
 }
 
-void Matrix::Show() {
+void Matrix::Show() const {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
             printf("%.4lf ", (*this)[i][j]);
@@ -331,6 +331,14 @@ Matrix Gaussian(Matrix M, Matrix c) {
     return ans;
 }
 
+bool equal(Matrix a, Matrix b) {
+    for(int i = 0; i < a.Row(); ++i) {
+        for(int j = 0; j < a.Col(); ++j) {
+            if(abs(a[i][j]-b[i][j]) > 0.0001) return false;
+        }
+    }
+    return true;
+}
 // int main() {
 //     Matrix A, b, x;
 //     A = NewMatrix();

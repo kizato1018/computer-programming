@@ -9,10 +9,12 @@ class BST : public BinTree<T> {
 public:
     BST() : BinTree<T>() {}
     void Show() const;
+    void Show(Node<T>**) const;
     BST<T> Push(T val);
     Node<T>* Find(T val);
-    T* Increase_order(T val);
+    Node<T>* Successor(Node<T>* cur);
     bool Delete(T val);
+    bool Delete(Node<T>*);
 };
 
 template <typename T>
@@ -25,6 +27,14 @@ void BST<T>::Show() const {
             cout << arr[i]->value << " -> " << arr[i]->right->value << " R" << endl;
     }
     cout << endl;
+}
+
+
+template <typename T>
+void BST<T>::Show(Node<T>** arr) const {
+    for(int i = 0; i < this->Size() && arr[i]; ++i) {
+        cout << arr[i]->value << endl;
+    }
 }
 
 template <typename T>
@@ -47,7 +57,8 @@ BST<T> BST<T>::Push(T val) {
                 parent->left_thread = false;
                 if(parent == this->left_most)
                     this->left_most = NewNode;
-                printf("%d->%d L\n", parent->value, val);
+                // cout << parent->value << "->" << val << " L" << endl;
+                // printf("%d->%d L\n", parent->value, val);
                 break;
             }
             parent = parent->left;
@@ -59,7 +70,8 @@ BST<T> BST<T>::Push(T val) {
                 NewNode->right = rthread;
                 parent->right = NewNode;
                 parent->right_thread = false;
-                printf("%d->%d R\n", parent->value, val);
+                // cout << parent->value << "->" << val << " R" << endl;
+                // printf("%d->%d R\n", parent->value, val);
                 break;
             }
             parent = parent->right;
@@ -75,9 +87,15 @@ template <typename T>
 Node<T>* BST<T>::Find(T val) {
     if(this->isEmpty()) return nullptr;
     Node<T>* cur = this->root->left;
-    while(!cur->isLeaf()) {
-        if(val < cur->value) cur = cur->left;
-        else if(cur->value < val) cur = cur->right;
+    while(1) {
+        if(val < cur->value) {
+            if(cur->left_thread) break;
+            cur = cur->left;
+        }
+        else if(cur->value < val) {
+            if(cur->right_thread) break;
+            cur = cur->right;
+        }
         else break;
     }
     if(cur->value != val) return nullptr;
@@ -85,26 +103,24 @@ Node<T>* BST<T>::Find(T val) {
 }
 
 template <typename T>
-T* BST<T>::Increase_order(T val) {
-    static Node<T>* tmp = nullptr;
-    if(!tmp) {
-        tmp = this->Find(val);
-        if(!tmp) return nullptr;
-        // cout << tmp->value << endl;
+Node<T>* BST<T>::Successor(Node<T>* cur) {
+    if(!cur) return nullptr;
+    if(!cur->right_thread) {
+        cur = cur->right;
+        while(!cur->left_thread) cur = cur->left;
+        return cur;
     }
-    Node<T>* r = nullptr;
-    if(tmp == this->root) {
-        tmp = nullptr;
-        return nullptr;
+    Node<T>* par = cur->parent;
+    while(par != this->root && par->right == cur) {
+        cur = par;
+        par = cur->parent;
     }
-    r = tmp;
-    tmp = tmp->right;
-    return &(r->value);
+    if(par == this->root) return nullptr;
+    return par;
 }
 
 template <typename T>
-bool BST<T>::Delete(T val) {
-    Node<T>* cur = this->Find(val);
+bool BST<T>::Delete(Node<T>* cur) {
     if(!cur) return false;
     if(cur->Childcnt() == 0) {
         if(cur->parent->left == cur) cur->parent->left = nullptr;
@@ -177,6 +193,12 @@ bool BST<T>::Delete(T val) {
         return false;
     }
     return true;
+}
+
+template <typename T>
+bool BST<T>::Delete(T val) {
+    Node<T>* cur = this->Find(val);
+    return this->Delete(cur);
 }
 
 

@@ -15,6 +15,7 @@ public:
     Matrix operator+(const Matrix&) const;
     Matrix operator*(const Matrix&) const;
     Matrix operator*(int) const;
+    friend Matrix operator*(int c, const Matrix& m) {return m*c;}
     Matrix operator-(const Matrix&) const;
     const double* operator[] (int i) const { return v_[i]; } 
     double* operator[] (int i) { return const_cast<double*> (static_cast<const Matrix &>(*this)[i]); }
@@ -31,7 +32,7 @@ public:
     double length(int col) const;
 
     Matrix& Input();
-    void Show();
+    void Show() const;
 
 private:
     int row_;
@@ -43,6 +44,7 @@ Matrix In(int);
 Matrix NewMatrix ();
 Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&, Matrix&);
 Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&);
-Matrix Gaussian(Matrix, Matrix);
+Matrix Gaussian(Matrix A, Matrix b);
 Matrix Jacobi(Matrix A, Matrix b);
+bool equal(Matrix a, Matrix b);
 #endif

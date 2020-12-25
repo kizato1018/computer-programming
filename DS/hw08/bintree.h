@@ -55,7 +55,11 @@ protected:
 
 template <typename T>
 Node<T>** BinTree<T>::Prefix_(Node<T>** arr, Node<T>* cur) const {
-    if(cur->isLeaf()) return arr;
+    if(cur->isLeaf()) {
+        *arr = cur;
+        ++arr;
+        return arr;
+    }
     *arr = cur;
     ++arr;
     if(!cur->left_thread)
@@ -66,22 +70,30 @@ Node<T>** BinTree<T>::Prefix_(Node<T>** arr, Node<T>* cur) const {
 }
 template <typename T>
 Node<T>** BinTree<T>::Infix_(Node<T>** arr, Node<T>* cur) const {
-    if(cur->isLeaf()) return arr;
+    if(cur->isLeaf()) {
+        *arr = cur;
+        ++arr;
+        return arr;
+    }
     if(!cur->left_thread)
-        arr = Prefix_(arr, cur->left);
+        arr = Infix_(arr, cur->left);
     *arr = cur;
     ++arr;
     if(!cur->right_thread)
-        arr = Prefix_(arr, cur->right);
+        arr = Infix_(arr, cur->right);
     return arr;
 }
 template <typename T>
 Node<T>** BinTree<T>::Postfix_(Node<T>** arr, Node<T>* cur) const {
-    if(cur->isLeaf()) return arr;
+    if(cur->isLeaf()) {
+        *arr = cur;
+        ++arr;
+        return arr;
+    }
     if(!cur->left_thread)
-        arr = Prefix_(arr, cur->left);
+        arr = Postfix_(arr, cur->left);
     if(!cur->right_thread)
-        arr = Prefix_(arr, cur->right);
+        arr = Postfix_(arr, cur->right);
     *arr = cur;
     ++arr;
     return arr;
@@ -136,6 +148,7 @@ Node<T>* BinTree<T>::Find(T val) const {
     return nullptr;
 }
 
+
 // template <typename T>
 // void BinTree<T>::InsertLeft(Node<T>* left, T val) {
 //     Node<T>* NewNode = new Node<T>(val);
@@ -172,6 +185,7 @@ void BinTree<T>::Push(T val) {
         root->left = NewNode;
         NewNode->left = lthread;
         NewNode->right = rthread;
+        NewNode->parent = root;
         left_most = NewNode;
         last = NewNode;
         ++size_;
