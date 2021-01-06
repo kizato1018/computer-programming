@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <vector>
 #include <cmath>
+#include "matrix.h"
 
 using namespace std;
 
@@ -11,8 +12,10 @@ struct Vector2d{
 };
 
 double Lagrange(vector<Vector2d> point, double n) {
+    //              (x-x2)(x-x3)          (x-x1)(x-x3)          (x-x1)(x-x2)   
+    // P(x) = y1 * -------------- + y2 * -------------- + y3 * -------------- 
+    //             (x1-x2)(x1-x3)        (x2-x1)(x2-x3)        (x3-x1)(x3-x2)  
     double ans = 0;
-    // vector<double> poly;
     for(int i = 0; i < point.size(); ++i) {
         double c = 1, d = 1;
         for(int j = 0; j < point.size(); ++j) {
@@ -22,24 +25,15 @@ double Lagrange(vector<Vector2d> point, double n) {
             }
         }
         ans += point[i].y * c / d;
-        // for(int j = 0; j < point.size(); ++j) {
-        //     if(i != j) {
-        //         if(poly.empty()) poly.push_back(1);
-        //         for(int k = 0; k <= j; ++k) {
-        //             poly[k] += poly[k] * point[j].x * -1;
-        //             if(k > 0)
-        //                 poly[k] += 
-        //         }
-        //         poly.push_back(1);
-
-        //     }
-        // }
     }
 
     return ans;
 }
 
 int main() {
+    // Interpolation Part 1
+    // Lagrange interpolation
+    // Find an interpolating polynomial for the data points
     int N;
     double x;
     vector<Vector2d> point;
@@ -67,7 +61,8 @@ int main() {
 */
 
 /*
-2019 fin
+2019 fin 
+Part 1 (a)
 11
 -5 5
 -4 5

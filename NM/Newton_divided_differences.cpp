@@ -11,6 +11,9 @@ struct Vector2d{
 };
 
 double NDD(vector<Vector2d> point, double x) {
+    //
+
+
     int N = point.size();
     double f[N][N] = {0};
     double ans = 0;
@@ -35,6 +38,9 @@ double NDD(vector<Vector2d> point, double x) {
 }
 
 int main() {
+    // Interpolation Part 2
+    // Newton_divided_differences
+    // given N point to predict P(x) value
     int N;
     double x;
     vector<Vector2d> point;
@@ -48,7 +54,6 @@ int main() {
     }
     cout << "predict point: ";
     cin >> x;
-    // cout << "ans:" << Lagrange(point, x) << endl;
     printf("ans: %lf\n", NDD(point, x));
 }
 
@@ -63,6 +68,7 @@ int main() {
 
 /*
 2019 fin
+Part 1 (b)
 4
 -1 1
 0 1

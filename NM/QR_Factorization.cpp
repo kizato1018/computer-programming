@@ -22,7 +22,12 @@ void QR(Matrix& A, Matrix& Q, Matrix& R) {
 }
 
 int main() {
-    Matrix A(3,3), Q(A), R(A.Col(), A.Col());
+    int Row = 0, Col = 0;
+    cout << "Row: ";
+    cin >> Row;
+    cout << "Column: ";
+    cin >> Col;
+    Matrix A(Row,Col), Q(A), R(Col, Col);
     A.Input();
     A.Show();
     QR(A, Q, R);
@@ -34,7 +39,18 @@ int main() {
 }
 
 /*
+3 3
 4 8 1
 0 2 -2
 3 6 7
+*/
+
+/*
+2019 fin
+Part 1 (d)
+4 3
+1 -2 -1
+2 0 1
+2 -4 2
+4 0 0
 */

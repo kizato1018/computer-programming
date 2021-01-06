@@ -17,12 +17,16 @@ Matrix GetD(const Matrix x, const Matrix a) {
 }
 
 Matrix Gauss_Newton(const Matrix a, const Matrix R) {
+    // x_0 = inital vector
+    //    x_{k+1} = x_k - ( D(x_k)^T * D(x_k) )^-1 * D(x_k)^T * r(x_k) 
+    // => v_k = -( D(x_k)^T * D(x_k) )^-1 * D(x_k)^T * r(x_k)
+    // => ( D(x_k)^T * D(x_k) ) * v_k = -( D(x_k)^T * r(x_k) ) 
     int k = a.Row();
     Matrix x(a.Col(), 1);
     Matrix D(k, a.Col()), r(k, 1);
     Matrix v(a.Col(), 1);
     // r.Show();
-    for(int cnt = 0; cnt < 4; ++cnt) {
+    for(int cnt = 0; cnt < 1000; ++cnt) {
         for(int i = 0; i < k; ++i) {
             r[i][0] = sqrt(pow(x[0][0] - a[i][0], 2) + pow(x[1][0] - a[i][1], 2)) - R[i][0];
         }
@@ -50,15 +54,47 @@ Matrix Gauss_Newton(const Matrix a, const Matrix R) {
     return x;
 }
 int main() {
-    Matrix a(3, 2), R(3, 1);
+    // Gauss Newton
+    // 
+    int N = 0;
+    cout << "How many points: ";
+    cin >> N;
+    Matrix a(N, 2), R(N, 1);
     a.Input();
     R.Input();
     Gauss_Newton(a, R).Show();
 }
 
 /*
+3
 -1 0
 1 1
 1 -1
 1 1 1
 */
+
+/*
+2019 fin
+Part 1 (e)
+3
+2 1
+5 3
+5 -3
+1 2 1
+*/
+
+/*
+2019 fin
+Part 2 #3
+
+r = x+y+z-10
+    x/y-y/z
+    xy-6
+    yz-6
+
+Dr =   1          1      1
+     1/y -x/y^2-1/z  y/z^2
+       y          x      0
+       0          z      y
+*/
+

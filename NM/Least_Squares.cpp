@@ -3,20 +3,25 @@
 #include <cmath>
 #include "matrix.h"
 
-const double PI = 3.141592;
+const double PI = 3.1415926535897932384626433832795;
 
 using namespace std;
 
 double eq(int c, double x) {
+    // Set equation (modify)
     switch(c) {
         case 0:
-            return 1;
+            return x;
+            // return 1;
         case 1:
-            return cos(2*PI*x);
+            return x;
+            // return cos(2*PI*x);
         case 2:
-            return sin(2*PI*x);
+            return x;
+            // return sin(2*PI*x);
         case 3:
-            return cos(4*PI*x);
+            return x;
+            // return cos(4*PI*x);
         default:
             break;
     }
@@ -24,20 +29,33 @@ double eq(int c, double x) {
 }
 
 Matrix LSA(Matrix& t, Matrix& y, int n) {
-    Matrix A(t.Row(), n), M, b(y), c, r;
+    // Normal equations for least squares
+    // Ax = b
+    // ( (A^T)*A )x' = (A^T)*b
+
+
+    Matrix A(t.Row(), t.Col()), ATA, b(y), c, r;
     double RMSE = 0;
+
+    // Set A (modify)
+    
     for(int i = 0; i < A.Row(); ++i) {
-        for(int j = 0; j < n; ++j) {
-            A[i][j] = eq(j, t[i][0]);
+        for(int j = 0; j < A.Col(); ++j) {
+            A[i][j] = eq(j, t[i][j]);
         }
     }
-    // M.Show();
-    // t.Show();
+
+    // Set A done
+    cout << "A:" << endl;
+    A.Show();
+
     b = A.Transpose() * b;
     cout << "AT * b:" << endl;
     b.Show();
-    M = A.Transpose() * A;
-    c = Gaussian(M, b);
+    ATA = A.Transpose() * A;
+    cout << "ATA:" << endl;
+    ATA.Show();
+    c = Gaussian(ATA, b);
     cout << "A*c" << endl;
     (A*c).Show();
     r = (A * c) - y;
@@ -59,7 +77,10 @@ double exp_f(Matrix& c, double x) {
 
 
 Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
-    Matrix A(t.Row(), 2), b(y), M, c, r(t.Row(), 1);
+    // ln(y) = ln(c1) + c2*t
+
+
+    Matrix A(t.Row(), 2), b(y), ATA, c, r(t.Row(), 1);
     double RMSE = 0;
     for(int i = 0; i < A.Row(); ++i) {
         A[i][0] = 1;
@@ -68,8 +89,8 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
         b[i][0] = log(y[i][0]);
     }
     b = A.Transpose() * b;
-    M = A.Transpose() * A;
-    c = Gaussian(M, b);
+    ATA = A.Transpose() * A;
+    c = Gaussian(ATA, b);
     c[0][0] = exp(c[0][0]);
     // cout << "expf" << endl;
     for(int i = 0; i < A.Row(); ++i) {
@@ -87,38 +108,90 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
 
 
 int main() {
-    int N = 0, C = 0;
-    cout << "How many point: ";
+    // Least Squares Approximation
+    // Solving an inconsistent system
+    // Find the “closest” x instead
+
+    int N = 0, C = 0, mode = 0;
+    cout << "How many equation: ";
     cin >> N;
-    cout << "How many constance: ";
+    cout << "How many variable: ";
     cin >> C;
-    // LSA normal
 
-    // Matrix t(N, 1), y(N, 1), c(C, 1);
+    cout << "1) Normal mode " << endl;
+    cout << "2) Exponential mode " << endl;
+    cin >> mode;
+    
+
+    Matrix t(N, C), y(N, 1), c(C, 1);
     // for(int i = 0; i < N; ++i) {
-    //     t[i][0] = (double)i/N;
+    //     t[i][0] = (double)i;
     // }
-    // y.Input();
-    // c = LSA(t, y, C);
-    // cout << "c:" << endl;
-    // c.Show();
-
-    // LSA_exp
-
-    Matrix t(N,1), y(N, 1), c(C, 1);
-    for(int i = 0; i < N; ++i)
-        t[i][0] = i;
+    t.Input();
     y.Input();
-    c = LSA_exp(t, y, C);
+
+
+    switch (mode) {
+    case 1:
+        // LSA normal
+        c = LSA(t, y, C);
+        break;
+    case 2:
+        // LSA Exponential
+        c = LSA_exp(t, y, C);
+        break;
+    default:
+        break;
+    }
+    cout << "c:" << endl;
     c.Show();
+
+
 }
 
 /*
+Example
+Normal equation
+x + y = 2
+x - y = 1
+x + y = 3
+
+    [1  1]      [2]
+A = [1 -1], b = [1]
+    [1  1]      [3]
+
+Input:
+3 2
+1
+1 1
+1 -1
+1 1
+2 1 3
+
+*/
+
+/*
 2019 fin
+Part 1 (c)
 4
+1
 2
+0
+1
+2
+3
 10
 5
 2
 1
+*/
+
+/*
+2019 fin
+Part 2 #2
+3
+1
+1
+4 7 11
+3 5 8
 */

@@ -10,8 +10,10 @@ public:
     Matrix() : row_(0), col_(0), v_(nullptr) {};
     Matrix(int row, int col);
     Matrix(const Matrix&);
+    Matrix(const double**);
     // Matrix(int r, int c, vector<vector<double> > val) : row_(r), col_(c), v(val) {};
     Matrix& operator=(const Matrix&);
+    Matrix& operator=(const double**);
     Matrix operator+(const Matrix&) const;
     Matrix operator*(const Matrix&) const;
     Matrix operator*(int) const;
