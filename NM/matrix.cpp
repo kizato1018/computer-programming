@@ -179,13 +179,30 @@ Matrix& Matrix::Input() {
     return *this;
 }
 
-void Matrix::Show() {
+void Matrix::Show() const {
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
             printf("%.4lf ", (*this)[i][j]);
         }
         puts("");
     }
+}
+
+Matrix Matrix::Vector(int col) const {
+    Matrix tmp(row_, 1);
+    for(int i = 0; i < row_; ++i) {
+        tmp[i][0] = (*this)[i][col];
+    }
+    return tmp;
+}
+
+double Matrix::length(int col) const {
+    double l = 0;
+    for(int i = 0; i < row_; ++i) {
+        l += pow((*this)[i][col],2);
+    }
+    l = sqrt(l);
+    return l;
 }
 
 Matrix In(int n) {
@@ -314,6 +331,14 @@ Matrix Gaussian(Matrix M, Matrix c) {
     return ans;
 }
 
+bool equal(Matrix a, Matrix b) {
+    for(int i = 0; i < a.Row(); ++i) {
+        for(int j = 0; j < a.Col(); ++j) {
+            if(abs(a[i][j]-b[i][j]) > 0.0001) return false;
+        }
+    }
+    return true;
+}
 // int main() {
 //     Matrix A, b, x;
 //     A = NewMatrix();
