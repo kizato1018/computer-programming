@@ -53,7 +53,8 @@ Matrix LSA(Matrix& t, Matrix& y, int n) {
 }
 
 double exp_f(Matrix& c, double x) {
-    return c[0][0]*exp(c[1][0]*(x-1961));
+    // return c[0][0]*exp(c[1][0]*(x-1961));
+    return c[0][0]*exp(c[1][0]*x);
 }
 
 
@@ -63,7 +64,8 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
     for(int i = 0; i < A.Row(); ++i) {
         A[i][0] = 1;
         A[i][1] = i;
-        b[i][0] = log(y[i][0]-279);
+        // b[i][0] = log(y[i][0]-279);
+        b[i][0] = log(y[i][0]);
     }
     b = A.Transpose() * b;
     M = A.Transpose() * A;
@@ -72,7 +74,8 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
     // cout << "expf" << endl;
     for(int i = 0; i < A.Row(); ++i) {
         // cout << exp_f(c, t[i][0]) << endl;
-        r[i][0] = exp_f(c, t[i][0]) - (y[i][0] - 279);
+        // r[i][0] = exp_f(c, t[i][0]) - (y[i][0] - 279);
+        r[i][0] = exp_f(c, t[i][0]) - y[i][0];
     }
     for(int i = 0; i < r.Row(); ++i) {
         RMSE += r[i][0] * r[i][0];
@@ -84,22 +87,38 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
 
 
 int main() {
-    // LSA
+    int N = 0, C = 0;
+    cout << "How many point: ";
+    cin >> N;
+    cout << "How many constance: ";
+    cin >> C;
+    // LSA normal
 
-    Matrix t(12, 1), y(12, 1), c(4, 1);
-    for(int i = 0; i < 12; ++i) {
-        t[i][0] = (double)i/12;
-    }
-    y.Input();
-    c = LSA(t, y, 4);
-    cout << "c:" << endl;
-    c.Show();
+    // Matrix t(N, 1), y(N, 1), c(C, 1);
+    // for(int i = 0; i < N; ++i) {
+    //     t[i][0] = (double)i/N;
+    // }
+    // y.Input();
+    // c = LSA(t, y, C);
+    // cout << "c:" << endl;
+    // c.Show();
 
     // LSA_exp
 
-    // Matrix t(50,1), y(50, 1), c(2, 1);
-    // for(int i = 0; i < 50; ++i)
-    //     t[i][0] = 1961+i;
-    // y.Input();
-    // c = LSA_exp(t, y, 2);
+    Matrix t(N,1), y(N, 1), c(C, 1);
+    for(int i = 0; i < N; ++i)
+        t[i][0] = i;
+    y.Input();
+    c = LSA_exp(t, y, C);
+    c.Show();
 }
+
+/*
+2019 fin
+4
+2
+10
+5
+2
+1
+*/

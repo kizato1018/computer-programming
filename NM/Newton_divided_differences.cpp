@@ -24,6 +24,9 @@ double NDD(vector<Vector2d> point, double x) {
             }
         }
     }
+    for(int i = 0; i < N; ++i) {
+        printf("c[%d]=%lf\n", i, f[i][0]);
+    }
     for(int i = N-1; i >= 0; --i) {
         ans *= (x - point[i].x);
         ans += f[i][0];
@@ -56,4 +59,14 @@ int main() {
 1900 291
 2000 370
 1950
+*/
+
+/*
+2019 fin
+4
+-1 1
+0 1
+1 2
+2 0
+0
 */
