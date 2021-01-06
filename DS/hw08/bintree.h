@@ -12,7 +12,7 @@ struct Node{
     bool operator > (const Node a) const {return a < *this;}
     bool operator <= (const Node a) const {return !(*this > a);}
     bool operator >= (const Node a) const {return !(*this < a);}
-    int Childcnt() const {return (left!=nullptr) + (right!=nullptr);}
+    int Childcnt() const {return (!left_thread) + (!right_thread);}
     T value;
     Node *parent = this;
     Node *left = this;

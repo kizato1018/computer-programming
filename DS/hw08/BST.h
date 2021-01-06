@@ -123,19 +123,26 @@ template <typename T>
 bool BST<T>::Delete(Node<T>* cur) {
     if(!cur) return false;
     if(cur->Childcnt() == 0) {
-        if(cur->parent->left == cur) cur->parent->left = nullptr;
-        else cur->parent->right = nullptr;
-        if(cur == this->left_most) this->left_most = cur->parent;
-        if(cur == this->last) this->last = nullptr;
-        if(cur == this->root) this->root = nullptr;
-        --this->size_;
+        if(cur->parent->left == cur) {
+            cur->parent->left = cur->left;
+            cur->parent->left_thread = cur->left_thread;
+        }
+        else {
+            cur->parent->right = cur->right;
+            cur->parent->right_thread = cur->right_thread;
+        }
+        // if(cur == this->left_most) this->left_most = cur->parent;
+        // if(cur == this->last) this->last = nullptr;
+        if(cur == this->root->left) this->root->left = this->root;
+        --(this->size_);
         delete cur;
     }
     else if(cur->Childcnt() == 1) {
-        if(cur->left) {
-            if(cur == this->root) {
-                this->root = cur->left;
-                cur->parent = nullptr;
+        if(!cur->left_thread) {
+            if(cur == this->root->left) {
+                this->root->left = cur->left;
+                cur->parent = this->root->left;
+                this->root->left_thread = cur->left_thread;
             }
             else if(cur->parent->left == cur) {
                 cur->parent->left = cur->left;
@@ -146,47 +153,32 @@ bool BST<T>::Delete(Node<T>* cur) {
                 cur->left->parent = cur->parent;
             }
         }
-        else {
-            if(cur == this->root) {
-                this->root = cur->right;
-                cur->parent = nullptr;
+        else if(!cur->right_thread){
+            if(cur == this->root->left) {
+                this->root->left = cur->right;
+                cur->parent = this->root;
             }
             else if(cur->parent->left == cur) {
                 cur->parent->left = cur->right;
                 cur->right->parent = cur->parent;
                 this->left_most = cur->right;
-                while(this->left_most->left) this->left_most = this->left_most->left;
+                // while(this->left_most->left) this->left_most = this->left_most->left;
             }
             else {
                 cur->parent->right = cur->right;
                 cur->right->parent = cur->parent;
             }
         }
-        if(cur == this->last) this->last = nullptr;
-        --this->size_;
+        // if(cur == this->last) this->last = nullptr;
+        --(this->size_);
         delete cur;
     }
     else if(cur->Childcnt() == 2) {
         Node<T>* local_max = cur->left;
-        while(local_max->right) local_max = local_max->right;
-        if(local_max->parent != cur) {
-            local_max->parent->right = local_max->left;
-            local_max->left->parent = local_max->parent;
-        }
-        if(cur->parent->left == cur) 
-            cur->parent->left = local_max;
-        else 
-            cur->parent->right = local_max;
-        local_max->parent = cur->parent;
-        local_max->left = (cur->left != local_max) ? cur->left : nullptr;
-        local_max->right = cur->right;
-        if(cur == this->root) {
-            this->root = local_max;
-            local_max->parent = nullptr;
-        }
-        if(cur == this->last) this->last = nullptr;
-        --this->size_;
-        delete cur;
+        while(!local_max->right_thread) local_max = local_max->right;
+        T v = local_max->value;
+        this->Delete(local_max);
+        cur->value = v;
     }
     else {
         printf("Error...\n");

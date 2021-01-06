@@ -75,7 +75,7 @@ bool Search(BST<Product>& Tree) {
     Node<Product> *tmp = Tree.Find(target);
     char c;
     if(tmp == nullptr) {
-        cout << "Product not found." << endl;
+        cout << "The productyou want to search is not exists in database." << endl;
         return false;
     }
     while(tmp) {
@@ -94,26 +94,28 @@ bool Import(BST<Product>& Tree) {
     Node<Product>* node;
     cout << "enter product number: ";
     cin >> target.product_number;
-    if(!target.Check()) return false;
+    cout << "enter product amount: ";
+    cin >> target.amount;
+    if(target.amount < 0) {
+        cout << "unvalid amount." << endl;
+        return false;
+    }
     if(!(node = Tree.Find(target))) {
         cout << "enter product price: ";
         cin >> target.price;
         if(!target.Check()) return false;
-        cout << "enter product amount: ";
-        cin >> target.amount;
-        if(!target.Check()) return false;
         Tree.Push(target);
+        cout << "=== you have inserted: ===" << endl;
+        target.Show();
+        cout << "=== into the tree ===" << endl;
     }
     else {
-        cout << "enter product amount: ";
-        cin >> target.amount;
-        if(!target.Check()) return false;
+        node->value.Show();
         node->value = node->value + target;
         target = node->value;
+        cout << "=== inserted: ===" << endl;
+        target.Show();
     }
-    cout << "=== you have inserted: ===" << endl;
-    target.Show();
-    cout << "=== into the tree ===" << endl;
     return true;
 }
 
@@ -127,7 +129,7 @@ bool Delete(BST<Product>& Tree) {
         return false;
     }
     target = node->value;
-    Tree.Delete(target);
+    Tree.Delete(node);
     cout << "=== you have just deleted:===" << endl;
     target.Show();
     return true;
@@ -138,22 +140,23 @@ bool Export(BST<Product>& Tree) {
     Node<Product>* node;
     cout << "enter product number: ";
     cin >> target.product_number;
-    if(!target.Check()) return false;
+    cout << "enter product amount: ";
+    cin >> target.amount;
+    if(target.amount < 0) {
+        cout << "unvalid amount." << endl;
+        return false;
+    }
     if(!(node = Tree.Find(target))) {
         cout << "The product you want to export is not exists in database." << endl;
         return false;
     }
     else {
-        cout << "enter product amount: ";
-        cin >> target.amount;
-        if(!target.Check()) return false;
         if(node->value.amount < target.amount) {
-            cout << "The product you want to export is notenoughin database." << endl;
+            cout << "The product you want to export is not enough in database." << endl;
             return false;
         }
-        target = node->value;
-        cout << "=== you have justexport:===" << endl;
-        target.Show();
+        cout << "=== you have just export:===" << endl;
+        node->value.Show();
         node->value = node->value - target;
         target = node->value;
         cout << "===remains: ===" << endl;
@@ -163,6 +166,10 @@ bool Export(BST<Product>& Tree) {
 }
 
 void List(BST<Product>& Tree) {
+    if(Tree.isEmpty()) {
+        cout << "Empty." << endl;
+        return;
+    }
     Node<Product>** arr = Tree.Infix();
     for(int i = 0; i < Tree.Size(); ++i) {
         arr[i]->value.Showln();
@@ -172,34 +179,48 @@ void List(BST<Product>& Tree) {
 
 bool Modify(BST<Product>& Tree) {
     Product Old, New;
-    Node<Product>* node;
+    Node<Product> *old_node, *new_node;
     cout << "enter product number: ";
     cin >> Old.product_number;
     cout << "enter new product number: ";
     cin >> New.product_number;
-    if(!Old.Check()) return false;
-    if(!(node = Tree.Find(Old))) {
-        cout << "Product not found. Modify falied." << endl;
+    if(!(old_node = Tree.Find(Old))) {
+        cout << "The product you want to modify the number is not exist in database." << endl;
         return false;
     }
     else {
-        New = node->value;
-        Tree.Delete(node);
-        Tree.Push(New);
+        cout << "=== you have just modifiedthe product number of product " << setw(3) << setfill('0') << old_node->value.product_number <<  ":===" << endl;
+        cout << "===the new data is ===" << endl;
+        if(new_node = Tree.Find(New)) {
+            new_node->value = new_node->value + old_node->value;
+            Tree.Delete(old_node);
+            New = new_node->value;
+        }
+        else {
+            New.amount = old_node->value.amount;
+            New.price = old_node->value.price;
+            Tree.Delete(old_node);
+            Tree.Push(New);
+        }
+        New.Show();
         return true;
     }
 }
 
-Product Search_price(BST<Product>& Tree) {
+void Search_price(BST<Product>& Tree) {
+    if(Tree.isEmpty()) {
+        cout << "Empty." << endl;
+        return;
+    }    
     Node<Product>** arr = Tree.BFS();
     Product max(-1, -1, -1);
     for(int i = 0; i < Tree.Size(); ++i) {
         if(max.price < arr[i]->value.price)
             max = arr[i]->value;
     }
-    cout << "highest price product:" << max;
+    cout << "The product number with highest price: " << max.product_number << endl;
     delete arr;
-    return max;
+    return;
 }
 
 bool Save(BST<Product>& Tree) {
@@ -263,6 +284,7 @@ int main() {
             Save(Tree);
             break;
         case 0:
+            cout << "Bye Bye~" << endl;
             return 0;
         
         default:

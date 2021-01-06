@@ -40,10 +40,10 @@ private:
     double **v_;
 
 };
-Matrix In(int);
-Matrix NewMatrix ();
-Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&, Matrix&);
-Matrix Elimination(Matrix, Matrix&, Matrix&, Matrix&);
+Matrix In(int); // 單元矩陣
+Matrix NewMatrix (); // 忘記了
+Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& P, Matrix& c); // 消去
+Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& c); // 消去
 Matrix Gaussian(Matrix A, Matrix b);
 Matrix Jacobi(Matrix A, Matrix b);
 bool equal(Matrix a, Matrix b);
