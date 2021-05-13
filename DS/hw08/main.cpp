@@ -61,7 +61,7 @@ bool init(BST<Product>& Tree) {
     }
     while(in >> item) {
         // cout << item << endl;
-        item.Show();
+        // item.Show();
         Tree.Push(item);
     }
     in.close();
@@ -84,6 +84,8 @@ bool Search(BST<Product>& Tree) {
         if(c == 'R') return true;
         else if(c == 'N') {
             tmp = Tree.Successor(tmp);
+            if(!tmp)
+                cout << "This is last product." << endl;
         }
     }
     return true;
@@ -288,9 +290,10 @@ int main() {
             return 0;
         
         default:
-            cout << "Wrong option" << endl;
+            cout << "Wrong option." << endl;
             break;
         }
+        cout << "Return to menu." << endl;
         system("pause");
         system("cls");
     }

@@ -15,6 +15,15 @@ int main() {
     // cout << "x:" << endl;
     // x.Show();
     // cout << (0.0042 - 0.001) / 200;
+    int R, C;
+    cout << "Row: ";
+    cin >> R;
+    cout << "Column: ";
+    cin >> C;
+    Matrix M(R, C);
+    M.Input();
+    Elimination(M).Show();
+
 }
 
 /*

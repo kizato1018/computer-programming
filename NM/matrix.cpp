@@ -316,6 +316,11 @@ Matrix Elimination(Matrix M, Matrix& L, Matrix& U, Matrix& c) {
     return Elimination(M, L, U, P, c);
 }
 
+Matrix Elimination(Matrix M) {
+    Matrix L, U, P, c;
+    return Elimination(M, L, U, P, c);
+}
+
 Matrix Gaussian(Matrix M, Matrix c) {
     int N = M.Row();
     Matrix L, U, ans(N, 1);
