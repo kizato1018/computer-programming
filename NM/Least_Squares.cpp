@@ -38,6 +38,7 @@ Matrix LSA(Matrix& t, Matrix& y, int n) {
     double RMSE = 0;
 
     // Set A (modify)
+
     
     for(int i = 0; i < A.Row(); ++i) {
         for(int j = 0; j < A.Col(); ++j) {
@@ -77,14 +78,14 @@ double exp_f(Matrix& c, double x) {
 
 
 Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
-    // ln(y) = ln(c1) + c2*t
-
+    // ln(y) = 1*ln(c1) + c2*t
+    //   b   =   *x1  +  x2
 
     Matrix A(t.Row(), 2), b(y), ATA, c, r(t.Row(), 1);
     double RMSE = 0;
     for(int i = 0; i < A.Row(); ++i) {
         A[i][0] = 1;
-        A[i][1] = i;
+        A[i][1] = t[i][0];
         // b[i][0] = log(y[i][0]-279);
         b[i][0] = log(y[i][0]);
     }
@@ -95,8 +96,8 @@ Matrix LSA_exp(Matrix& t, Matrix& y, int n) {
     // cout << "expf" << endl;
     for(int i = 0; i < A.Row(); ++i) {
         // cout << exp_f(c, t[i][0]) << endl;
-        // r[i][0] = exp_f(c, t[i][0]) - (y[i][0] - 279);
-        r[i][0] = exp_f(c, t[i][0]) - y[i][0];
+        // r[i][0] = (y[i][0] - 279) - exp_f(c, t[i][0]);
+        r[i][0] = y[i][0] - exp_f(c, t[i][0]);
     }
     for(int i = 0; i < r.Row(); ++i) {
         RMSE += r[i][0] * r[i][0];
@@ -176,14 +177,8 @@ Part 1 (c)
 4
 1
 2
-0
-1
-2
-3
-10
-5
-2
-1
+0 1 2 3
+10 5 2 1
 */
 
 /*
@@ -194,4 +189,28 @@ Part 2 #2
 1
 4 7 11
 3 5 8
+*/
+
+/*
+2018 fin
+Part 1 (b)
+4
+1
+2
+-2 0 1 2
+1 2 2 5
+*/
+
+/*
+2017 fin
+Part 1 (b)
+5
+3
+1
+3 -1 2
+4 1 0
+-3 2 1
+1 1 5
+-2 0 3
+10 10 -5 15 0
 */

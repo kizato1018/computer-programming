@@ -21,6 +21,7 @@ Matrix Gauss_Newton(const Matrix a, const Matrix R) {
     //    x_{k+1} = x_k - ( D(x_k)^T * D(x_k) )^-1 * D(x_k)^T * r(x_k) 
     // => v_k = -( D(x_k)^T * D(x_k) )^-1 * D(x_k)^T * r(x_k)
     // => ( D(x_k)^T * D(x_k) ) * v_k = -( D(x_k)^T * r(x_k) ) 
+
     int k = a.Row();
     Matrix x(a.Col(), 1);
     Matrix D(k, a.Col()), r(k, 1);
@@ -98,3 +99,24 @@ Dr =   1          1      1
        0          z      y
 */
 
+/*
+2018 fin
+Part 1 (d)
+4
+2 1
+5 3
+5 -3
+8 -10
+1 2 1 4
+*/
+
+/*
+2017 fin
+Part 1 (d)
+3
+-1 0
+1 1
+1 -1
+1 1 1
+
+*/

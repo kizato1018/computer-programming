@@ -16,7 +16,7 @@ public:
     Matrix& operator=(const double**);
     Matrix operator+(const Matrix&) const;
     Matrix operator*(const Matrix&) const;
-    Matrix operator*(int) const;
+    Matrix operator*(double) const;
     friend Matrix operator*(int c, const Matrix& m) {return m*c;}
     Matrix operator-(const Matrix&) const;
     const double* operator[] (int i) const { return v_[i]; } 

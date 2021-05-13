@@ -11,7 +11,7 @@ void QR(Matrix& A, Matrix& Q, Matrix& R) {
         Matrix a = A.Vector(i);
         for(int j = 0; j < i; ++j) {
             double d = (Q.Vector(j).Transpose()*A.Vector(i))[0][0];
-            a = a - Q.Vector(j) * d;
+            a = a - (Q.Vector(j) * d);
             R[j][i] = d;
         }
         for(int k = 0; k < dim; ++k) {
@@ -53,4 +53,24 @@ Part 1 (d)
 2 0 1
 2 -4 2
 4 0 0
+*/
+
+/*
+2018 fin
+Part 1 (c)
+4 3
+1 -1 4
+1 4 -2
+1 4 2
+1 -1 0
+*/
+
+/*
+2017 fin
+Part 1 (c)
+4 3
+1 2 2
+2 -1 2
+3 1 1
+1 1 -1
 */

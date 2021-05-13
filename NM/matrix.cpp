@@ -99,7 +99,7 @@ Matrix Matrix::operator*(const Matrix& M) const {
     return tmp;
 }
 
-Matrix Matrix::operator*(int c) const {
+Matrix Matrix::operator*(double c) const {
     Matrix tmp(*this);
     for(int i = 0; i < row_; ++i) {
         for(int j = 0; j < col_; ++j) {
